@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.kursach;
 
 import java.util.ArrayList;
 

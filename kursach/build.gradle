@@ -1,6 +1,4 @@
 buildscript {
-    
-
     repositories {
         mavenLocal()
         mavenCentral()
@@ -8,8 +6,6 @@ buildscript {
         jcenter()
     }
     dependencies {
-        
-
     }
 }
 
@@ -19,12 +15,8 @@ allprojects {
 
     version = '1.0'
     ext {
-        appName = "kursach"
-        gdxVersion = '1.9.8'
-        roboVMVersion = '2.3.3'
-        box2DLightsVersion = '1.4'
-        ashleyVersion = '1.7.0'
-        aiVersion = '1.8.0'
+        appName = "Netrew"
+        gdxVersion = '1.9.9'
     }
 
     repositories {
@@ -38,25 +30,25 @@ allprojects {
 project(":desktop") {
     apply plugin: "java"
 
-
     dependencies {
         compile project(":core")
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        
     }
 }
 
 project(":core") {
     apply plugin: "java"
 
-
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        
     }
 }
 
 tasks.eclipse.doLast {
     delete ".project"
 }
+
+/*task wrapper(type: Wrapper) {
+    gradleVersion = '5.0'
+}*/
