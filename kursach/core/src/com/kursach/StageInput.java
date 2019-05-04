@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -69,9 +70,11 @@ public class StageInput implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (currentCommand == 1 && button == com.badlogic.gdx.Input.Buttons.LEFT) {
             touchedPos.x = screenX;
-            touchedPos.y = Block.defaultHeight - screenY;
+            touchedPos.y = screenHeight - screenY;
             Vector3 input = new Vector3(touchedPos.x, touchedPos.y, 0);
             stageManager.cam.unproject(input);
+            input.y = - input.y;
+            System.out.println(input.x + " " + input.y);
             Block newBlock = new If(input.x - Block.defaultWidth / 2, input.y - Block.defaultHeight / 2, stageManager.cam);
             stage.addActor(newBlock);
             MainScreen.mainBlocks.add(newBlock);

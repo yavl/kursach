@@ -36,8 +36,9 @@ public class StageManager {
 
     public StageManager() {
         cam = new OrthographicCamera(screenWidth, screenHeight);
-        cam.setToOrtho(true, 0, 0);
+        cam.setToOrtho(false, screenWidth, screenHeight);
         cam.position.set(0, 0, 0);
+        cam.zoom = 500f;
         cam.update();
         camSpeed = new Vector2();
 
