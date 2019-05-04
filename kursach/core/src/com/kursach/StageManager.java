@@ -28,7 +28,6 @@ public class StageManager {
     public static final int screenHeight = Gdx.graphics.getHeight();  //Экрана
     Stage stage;
     OrthographicCamera cam;
-    Vector2 camSpeed;
     InputMultiplexer input;
     StageInput stageInput;
     InputMultiplexer inputs;
@@ -36,13 +35,11 @@ public class StageManager {
 
     public StageManager() {
         cam = new OrthographicCamera(screenWidth, screenHeight);
-        cam.setToOrtho(false, screenWidth, screenHeight);
         cam.position.set(0, 0, 0);
-        cam.zoom = 500f;
+        cam.zoom = 1f;
         cam.update();
-        camSpeed = new Vector2();
 
-        FitViewport viewp = new FitViewport(1, 1, cam);
+        FitViewport viewp = new FitViewport(screenWidth, screenHeight, cam);
         batch = new SpriteBatch();
         stage = new Stage(viewp, batch);
 
@@ -90,6 +87,7 @@ public class StageManager {
                 stageInput.currentCommand = 1;
             }
         } );
+        System.out.println(button.getWidth() + ", " + button.getHeight());
     }
 
     public void buttonDebug() {
@@ -110,8 +108,9 @@ public class StageManager {
         checkHovering();
     }
 
-    public void updateCam() {
+    public void update(float dt) {
         cam.update();
         stage.getBatch().setProjectionMatrix(cam.combined);
+        stageInput.handleInput(dt);
     }
 }

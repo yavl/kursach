@@ -13,8 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StageInput implements InputProcessor {
-    public static final int screenWidth = Gdx.graphics.getWidth();  //Разрешение
-    public static final int screenHeight = Gdx.graphics.getHeight();  //Экрана
+    public static float camSpeed = 500f;
+    public static final int screenWidth = Gdx.graphics.getWidth();
+    public static final int screenHeight = Gdx.graphics.getHeight();
     public Map<String, Integer> commandMap;  //Список доступных команд, название и код
     int currentCommand;  //Переменная которая определяет текущую команду
     public Vector2 mousePos;
@@ -22,6 +23,8 @@ public class StageInput implements InputProcessor {
     public Vector2 releasedPos;
     Stage stage;
     public StageManager stageManager;
+    private Vector2 dragOld = new Vector2(); // для перемещения камеры кнопкой мыши
+    private Vector2 dragNew = new Vector2();
 
     public StageInput(Stage stage, StageManager stageManager) {
         this.stage = stage;
@@ -50,9 +53,6 @@ public class StageInput implements InputProcessor {
             System.out.println("Adjusting");
             currentCommand = 2;
         }
-        else if (keycode == Input.Keys.LEFT) {
-            stageManager.stage.getCamera().position.x = -100;
-        }
         return false;
     }
 
@@ -68,6 +68,11 @@ public class StageInput implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        { // для проверок
+            Vector3 input = new Vector3(screenX, screenY, 0);
+            stageManager.cam.unproject(input);
+            System.out.println("Мышь: " + input.x + ", " + input.y);
+        }
         if (currentCommand == 1 && button == com.badlogic.gdx.Input.Buttons.LEFT) {
             touchedPos.x = screenX;
             touchedPos.y = screenHeight - screenY;
@@ -116,5 +121,36 @@ public class StageInput implements InputProcessor {
         }
         System.out.println(cam.zoom);
         return false;
+    }
+
+    public void handleInput(float dt) {
+        OrthographicCamera cam = stageManager.cam;
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            cam.translate(-camSpeed * cam.zoom * dt, 0, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            cam.translate(camSpeed * cam.zoom * dt, 0, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            cam.translate(0, -camSpeed * cam.zoom * dt, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            cam.translate(0, camSpeed * cam.zoom * dt, 0);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.exit();
+        }
+
+        if (Gdx.input.justTouched()) {
+            dragNew.set(Gdx.input.getX(), Gdx.input.getY());
+            dragOld.set(dragNew);
+        }
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            dragNew.set(Gdx.input.getX(), Gdx.input.getY());
+            if (!dragNew.equals(dragOld)) {
+                cam.translate((dragOld.x - dragNew.x) * cam.zoom, (dragNew.y - dragOld.y) * cam.zoom);
+                dragOld.set(dragNew);
+            }
+        }
     }
 }
