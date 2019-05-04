@@ -3,7 +3,9 @@ package com.kursach;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import java.util.HashMap;
@@ -18,9 +20,11 @@ public class StageInput implements InputProcessor {
     public Vector2 touchedPos;  //Вектор хранящий координаты последнего клика мышкой
     public Vector2 releasedPos;
     Stage stage;
+    public StageManager stageManager;
 
-    public StageInput(Stage stage) {
+    public StageInput(Stage stage, StageManager stageManager) {
         this.stage = stage;
+        this.stageManager = stageManager;
         touchedPos = new Vector2(0, 0);
         releasedPos = new Vector2(0, 0);
         mousePos = new Vector2();
@@ -46,7 +50,7 @@ public class StageInput implements InputProcessor {
             currentCommand = 2;
         }
         else if (keycode == Input.Keys.LEFT) {
-
+            stageManager.stage.getCamera().position.x = -100;
         }
         return false;
     }
@@ -65,8 +69,10 @@ public class StageInput implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (currentCommand == 1 && button == com.badlogic.gdx.Input.Buttons.LEFT) {
             touchedPos.x = screenX;
-            touchedPos.y = screenHeight - screenY;
-            Block newBlock = new If(touchedPos.x - Block.defaultWidth / 2, touchedPos.y - Block.defaultHeight / 2);
+            touchedPos.y = Block.defaultHeight - screenY;
+            Vector3 input = new Vector3(touchedPos.x, touchedPos.y, 0);
+            stageManager.cam.unproject(input);
+            Block newBlock = new If(input.x - Block.defaultWidth / 2, input.y - Block.defaultHeight / 2, stageManager.cam);
             stage.addActor(newBlock);
             MainScreen.mainBlocks.add(newBlock);
         }
@@ -96,6 +102,16 @@ public class StageInput implements InputProcessor {
 
     @Override
     public boolean scrolled(int amount) {
+        OrthographicCamera cam = stageManager.cam;
+        switch (amount) {
+            case 1:
+                cam.zoom += 0.15f * cam.zoom;
+                break;
+            case -1:
+                cam.zoom -= 0.15f * cam.zoom;
+                break;
+        }
+        System.out.println(cam.zoom);
         return false;
     }
 }

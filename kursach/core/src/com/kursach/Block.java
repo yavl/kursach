@@ -1,20 +1,23 @@
 package com.kursach;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.util.ArrayList;
 
-public abstract class Block extends Actor{
+public abstract class Block extends Actor {
     public ArrayList<Block> internalBlocks;
     public ShapeRenderer shape;
     public static float defaultWidth = 200;
     public static float defaultHeight = 250;
+    OrthographicCamera cam;
 
-    public Block(float x, float y) {
+    public Block(float x, float y, OrthographicCamera cam) {
         super();
+        this.cam = cam;
         setPosition(x, y);
         setSize(defaultWidth, defaultHeight);
         shape = new ShapeRenderer();
@@ -41,6 +44,7 @@ public abstract class Block extends Actor{
     }
 
     public void drawShape() {
+        shape.setProjectionMatrix(cam.combined);
         shape.begin(ShapeRenderer.ShapeType.Line);
         shape.rect(getX(), getY(), getWidth(), getHeight());
         shape.end();

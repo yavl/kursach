@@ -5,12 +5,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.awt.*;
@@ -23,22 +26,27 @@ import java.util.Map;
 public class StageManager {
     public static final int screenWidth = Gdx.graphics.getWidth();  //Разрешение
     public static final int screenHeight = Gdx.graphics.getHeight();  //Экрана
-    public OrthographicCamera camera;
     Stage stage;
     OrthographicCamera cam;
     Vector2 camSpeed;
     InputMultiplexer input;
     StageInput stageInput;
     InputMultiplexer inputs;
+    SpriteBatch batch;
 
     public StageManager() {
-        stage = new Stage(new ScreenViewport());
-        createButton();
         cam = new OrthographicCamera(screenWidth, screenHeight);
+        cam.setToOrtho(true, 0, 0);
         cam.position.set(0, 0, 0);
         cam.update();
         camSpeed = new Vector2();
-        stageInput = new StageInput(stage);
+
+        FitViewport viewp = new FitViewport(1, 1, cam);
+        batch = new SpriteBatch();
+        stage = new Stage(viewp, batch);
+
+        createButton();
+        stageInput = new StageInput(stage, this);
         inputs = new InputMultiplexer();
         inputs.addProcessor(stageInput);
         inputs.addProcessor(stage);
