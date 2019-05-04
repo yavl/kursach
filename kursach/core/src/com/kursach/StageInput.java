@@ -13,17 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StageInput implements InputProcessor {
-    public static final int screenWidth = Gdx.graphics.getWidth();
-    public static final int screenHeight = Gdx.graphics.getHeight();
-    public Map<String, Integer> commandMap;
-    public static int currentCommand;
+	public static float camSpeed = 500f;
     public Vector3 mousePos;
-    public static Vector3 touchedPos;
+    public Vector3 touchedPos;  //Вектор хранящий координаты последнего клика мышкой
     public Vector3 releasedPos;
-    public static Vector2 distance;
     Stage stage;
     public StageManager stageManager;
-    public static Block tempBlock;
 
     public StageInput(Stage stage, StageManager stageManager) {
         this.stage = stage;
@@ -53,9 +48,6 @@ public class StageInput implements InputProcessor {
         else if (keycode == Input.Keys.NUM_2) {
             System.out.println("Adjusting");
             currentCommand = 2;
-        }
-        else if (keycode == Input.Keys.LEFT) {
-            stageManager.stage.getCamera().position.x = -100;
         }
         return false;
     }
@@ -126,5 +118,36 @@ public class StageInput implements InputProcessor {
         }
         System.out.println(cam.zoom);
         return false;
+    }
+
+    public void handleInput(float dt) {
+        OrthographicCamera cam = stageManager.cam;
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            cam.translate(-camSpeed * cam.zoom * dt, 0, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            cam.translate(camSpeed * cam.zoom * dt, 0, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            cam.translate(0, -camSpeed * cam.zoom * dt, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            cam.translate(0, camSpeed * cam.zoom * dt, 0);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.exit();
+        }
+
+        if (Gdx.input.justTouched()) {
+            dragNew.set(Gdx.input.getX(), Gdx.input.getY());
+            dragOld.set(dragNew);
+        }
+        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            dragNew.set(Gdx.input.getX(), Gdx.input.getY());
+            if (!dragNew.equals(dragOld)) {
+                cam.translate((dragOld.x - dragNew.x) * cam.zoom, (dragNew.y - dragOld.y) * cam.zoom);
+                dragOld.set(dragNew);
+            }
+        }
     }
 }

@@ -25,15 +25,14 @@ public class Block extends Actor {
         setPosition(x, y);
         setSize(defaultWidth, defaultHeight);
         shape = new ShapeRenderer();
-        shape.setColor(Color.GREEN);
         addListener( new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (StageInput.currentCommand == 2) {
                     System.out.println("working");
                     clickEvent(x, y);
                 }
-
+                return false;
             }
         } );
     }
@@ -42,7 +41,7 @@ public class Block extends Actor {
         System.out.println("Moving");
         StageInput.currentCommand = 3;
         StageInput.tempBlock = this;
-        StageInput.distance.set(x - getX(), y - getY());
+        StageInput.distance.set(x, y, 0);
     }
 
     public Block() {
@@ -68,7 +67,12 @@ public class Block extends Actor {
     public void drawShape() {
         shape.setProjectionMatrix(cam.combined);
         shape.begin(ShapeRenderer.ShapeType.Line);
+        shape.setColor(Color.GREEN);
         shape.rect(getX(), getY(), getWidth(), getHeight());
+        shape.end();
+        shape.setColor(Color.LIGHT_GRAY);
+        shape.begin(ShapeRenderer.ShapeType.Filled);
+        shape.rect(getX() + 1, getY() + 1, getWidth() - 2, getHeight() - 2);
         shape.end();
     }
 
