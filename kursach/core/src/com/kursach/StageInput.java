@@ -13,26 +13,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StageInput implements InputProcessor {
-    public static final int screenWidth = Gdx.graphics.getWidth();  //Разрешение
-    public static final int screenHeight = Gdx.graphics.getHeight();  //Экрана
-    public Map<String, Integer> commandMap;  //Список доступных команд, название и код
-    int currentCommand;  //Переменная которая определяет текущую команду
-    public Vector2 mousePos;
-    public Vector2 touchedPos;  //Вектор хранящий координаты последнего клика мышкой
-    public Vector2 releasedPos;
+    public static final int screenWidth = Gdx.graphics.getWidth();
+    public static final int screenHeight = Gdx.graphics.getHeight();
+    public Map<String, Integer> commandMap;
+    public static int currentCommand;
+    public Vector3 mousePos;
+    public static Vector3 touchedPos;
+    public Vector3 releasedPos;
+    public static Vector2 distance;
     Stage stage;
     public StageManager stageManager;
+    public static Block tempBlock;
 
     public StageInput(Stage stage, StageManager stageManager) {
         this.stage = stage;
         this.stageManager = stageManager;
-        touchedPos = new Vector2(0, 0);
-        releasedPos = new Vector2(0, 0);
-        mousePos = new Vector2();
+        touchedPos = new Vector3();
+        releasedPos = new Vector3();
+        distance = new Vector2();
+        mousePos = new Vector3();
         commandMap = new HashMap<String, Integer>();
         commandMap.put("Nothing", 0);
         commandMap.put("Create if block", 1);
         commandMap.put("Adjust", 2);
+        commandMap.put("Dragging", 3);
         currentCommand = 0;
     }
 
@@ -69,13 +73,8 @@ public class StageInput implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (currentCommand == 1 && button == com.badlogic.gdx.Input.Buttons.LEFT) {
-            touchedPos.x = screenX;
-            touchedPos.y = screenHeight - screenY;
-            Vector3 input = new Vector3(touchedPos.x, touchedPos.y, 0);
-            stageManager.cam.unproject(input);
-            input.y = - input.y;
-            System.out.println(input.x + " " + input.y);
-            Block newBlock = new If(input.x - Block.defaultWidth / 2, input.y - Block.defaultHeight / 2, stageManager.cam);
+            touchedPos = getNewPosition(screenX, screenY);
+            Block newBlock = new If(touchedPos.x - Block.defaultWidth / 2, touchedPos.y - Block.defaultHeight / 2, stageManager.cam);
             stage.addActor(newBlock);
             MainScreen.mainBlocks.add(newBlock);
         }
@@ -84,22 +83,33 @@ public class StageInput implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if (currentCommand == 1 && button == com.badlogic.gdx.Input.Buttons.LEFT) {
+        if (currentCommand == 3 && button == com.badlogic.gdx.Input.Buttons.LEFT) {
+            currentCommand = 2;
+            tempBlock = null;
         }
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if (currentCommand == 1) {
+        if (currentCommand == 3) {
+            mousePos = getNewPosition(screenX, screenY);
+            tempBlock.setPosition(mousePos.x, mousePos.y);
         }
         return false;
     }
 
+    public Vector3 getNewPosition(int x, int y) {
+        touchedPos.x = x;
+        touchedPos.y = screenHeight - y;
+        Vector3 input = new Vector3(touchedPos.x, touchedPos.y, 0);
+        stageManager.cam.unproject(input);
+        input.y = - input.y;
+        return input;
+    }
+
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        mousePos.x = screenX;
-        mousePos.y = screenHeight - screenY;
         return false;
     }
 

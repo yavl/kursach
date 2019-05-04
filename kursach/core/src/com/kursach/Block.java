@@ -6,15 +6,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import java.util.ArrayList;
 
-public abstract class Block extends Actor {
+public class Block extends Actor {
     public ArrayList<Block> internalBlocks;
     public ShapeRenderer shape;
     public static float defaultWidth = 200;
     public static float defaultHeight = 250;
     OrthographicCamera cam;
+
 
     public Block(float x, float y, OrthographicCamera cam) {
         super();
@@ -23,7 +26,25 @@ public abstract class Block extends Actor {
         setSize(defaultWidth, defaultHeight);
         shape = new ShapeRenderer();
         shape.setColor(Color.GREEN);
+        addListener( new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (StageInput.currentCommand == 2) {
+                    System.out.println("working");
+                    clickEvent(x, y);
+                }
+
+            }
+        } );
     }
+
+    public void clickEvent(float x, float y) {
+        System.out.println("Moving");
+        StageInput.currentCommand = 3;
+        StageInput.tempBlock = this;
+        StageInput.distance.set(x - getX(), y - getY());
+    }
+
     public Block() {
         super();
     }
@@ -65,7 +86,6 @@ public abstract class Block extends Actor {
             }
         }
         if (y1 <= mousePositionY && mousePositionY <= y2) {
-            System.out.println(y1 + " " + y2 + " " + mousePositionY);
             if (x1 <= mousePositionX && mousePositionX <= x1 + 4) {
                 return true;
             }
