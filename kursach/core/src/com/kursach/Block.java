@@ -41,7 +41,7 @@ public class Block extends Actor {
         System.out.println("Moving");
         StageInput.currentCommand = 3;
         StageInput.tempBlock = this;
-        StageInput.distance.set(x, y, 0);
+        StageInput.distance.set(x, y);
     }
 
     public Block() {

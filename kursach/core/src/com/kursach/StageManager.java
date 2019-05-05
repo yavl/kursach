@@ -24,8 +24,8 @@ import java.util.Map;
  */
 
 public class StageManager {
-    public static final int screenWidth = Gdx.graphics.getWidth();  //Разрешение
-    public static final int screenHeight = Gdx.graphics.getHeight();  //Экрана
+    public static final int screenWidth = Gdx.graphics.getWidth();
+    public static final int screenHeight = Gdx.graphics.getHeight();
     Stage stage;
     public static OrthographicCamera cam;
     InputMultiplexer input;

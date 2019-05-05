@@ -13,21 +13,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StageInput implements InputProcessor {
+    public static final int screenWidth = Gdx.graphics.getWidth();
+    public static final int screenHeight = Gdx.graphics.getHeight();
 	public static float camSpeed = 500f;
     public Vector3 mousePos;
     public Vector3 touchedPos;  //Вектор хранящий координаты последнего клика мышкой
     public Vector3 releasedPos;
+    public static Vector2 distance;
     Stage stage;
     public StageManager stageManager;
+    public Map<String, Integer> commandMap;
+    public static int currentCommand;
+    public static Block tempBlock;
+    private Vector2 dragOld = new Vector2(); // для перемещения камеры кнопкой мыши
+    private Vector2 dragNew = new Vector2();
 
     public StageInput(Stage stage, StageManager stageManager) {
         this.stage = stage;
         this.stageManager = stageManager;
         touchedPos = new Vector3();
         releasedPos = new Vector3();
-        distance = new Vector2();
         mousePos = new Vector3();
         commandMap = new HashMap<String, Integer>();
+        distance = new Vector2();
         commandMap.put("Nothing", 0);
         commandMap.put("Create if block", 1);
         commandMap.put("Adjust", 2);
@@ -65,7 +73,7 @@ public class StageInput implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (currentCommand == 1 && button == com.badlogic.gdx.Input.Buttons.LEFT) {
-            touchedPos = getNewPosition(screenX, screenY);
+            touchedPos = getNewPosition();
             Block newBlock = new If(touchedPos.x - Block.defaultWidth / 2, touchedPos.y - Block.defaultHeight / 2, stageManager.cam);
             stage.addActor(newBlock);
             MainScreen.mainBlocks.add(newBlock);
@@ -85,18 +93,15 @@ public class StageInput implements InputProcessor {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         if (currentCommand == 3) {
-            mousePos = getNewPosition(screenX, screenY);
-            tempBlock.setPosition(mousePos.x, mousePos.y);
+            mousePos = getNewPosition();
+            tempBlock.setPosition(mousePos.x - distance.x, mousePos.y - distance.y);
         }
         return false;
     }
 
-    public Vector3 getNewPosition(int x, int y) {
-        touchedPos.x = x;
-        touchedPos.y = screenHeight - y;
-        Vector3 input = new Vector3(touchedPos.x, touchedPos.y, 0);
+    public Vector3 getNewPosition() {
+        Vector3 input = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         stageManager.cam.unproject(input);
-        input.y = - input.y;
         return input;
     }
 
