@@ -3,3 +3,4 @@
 *.exe
 .bam*
 kursachcpp/main
+*.kotlin_module

@@ -1,10 +1,9 @@
 package com.kursach;
 
-import com.badlogic.gdx.ApplicationAdapter;
-
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 
-public class Main extends ApplicationAdapter {
+public class Main extends Game {
 	MainScreen screen;
 	
 	@Override
@@ -21,5 +20,10 @@ public class Main extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		screen.dispose();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		screen.resize(width, height);
 	}
 }
