@@ -17,7 +17,10 @@ public class Block extends Actor {
     public ShapeRenderer shape;
     public static float defaultWidth = 200;
     public static float defaultHeight = 250;
+    public static float minWidth = 70;
+    public static float minHeight = 50;
     OrthographicCamera cam;
+    public boolean overBorder = false;
 
 
     public Block(float x, float y, OrthographicCamera cam) {
@@ -29,12 +32,21 @@ public class Block extends Actor {
         addListener( new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (overBorder) {
+                    borderClickEvent();
+                    return false;
+                }
                 if (StageInput.currentCommand == 2) {
                     clickEvent(x, y);
+                    return false;
                 }
                 return false;
             }
         } );
+    }
+
+    public void borderClickEvent() {
+        StageInput.tempBlock = this;
     }
 
     public void clickEvent(float x, float y) {
@@ -75,7 +87,7 @@ public class Block extends Actor {
         shape.end();
     }
 
-    public boolean hoveringOverBorder(float mousePositionX, float mousePositionY) {
+    public void hoveringOverBorder(float mousePositionX, float mousePositionY) {
         float x1 = getX() - 2;
         float y1 = getY() - 2;
         float x2 = getX() + getWidth() + 2;
@@ -84,46 +96,64 @@ public class Block extends Actor {
         //Проверяется лежит ли мышь:
         if (x1 <= mousePositionX && mousePositionX <= x1 + 4) {
             if (y1 <= mousePositionY && y1 + 4 >= mousePositionY) {
+                StageInput.blockResizeDirection = 7;
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Crosshair);
-                return true;
+                overBorder = true;
+                return;
             }
             else if (y2 - 4 <= mousePositionY && y2 >= mousePositionY) {
+                overBorder = true;
+                StageInput.blockResizeDirection = 8;
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Crosshair);
-                return true;
+                return;
             }
         }  //В нижних точках
         if (x2 - 4 <= mousePositionX && mousePositionX <= x2) {
             if (y1 <= mousePositionY && y1 + 4 >= mousePositionY) {
+                StageInput.blockResizeDirection = 6;
+                overBorder = true;
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Crosshair);
-                return true;
+                return;
             }
             else if (y2 - 4 <= mousePositionY && y2 >= mousePositionY) {
+                StageInput.blockResizeDirection = 5;
+                overBorder = true;
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Crosshair);
-                return true;
+                return;
             }
         }  //В верхних точках
 
         if (x1 <= mousePositionX && mousePositionX <= x2) {
             if (y1 <= mousePositionY && mousePositionY <= y1 + 4) {
+                overBorder = true;
+                StageInput.blockResizeDirection = 3;
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
-                return true;
+                return;
             }
             else if (y2 - 4 <= mousePositionY && mousePositionY <= y2) {
+                overBorder = true;
+                StageInput.blockResizeDirection = 1;
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
-                return true;
+                return;
             }
         }  //В горизонтальной прямой
         if (y1 <= mousePositionY && mousePositionY <= y2) {
             if (x1 <= mousePositionX && mousePositionX <= x1 + 4) {
+                overBorder = true;
+                StageInput.blockResizeDirection = 4;
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
-                return true;
+                return;
             }
             else if (x2 - 4 <= mousePositionX && mousePositionX <= x2) {
+                overBorder = true;
+                StageInput.blockResizeDirection = 2;
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
-                return true;
+                return;
             }
         }  //В вертикальной прямой
+        overBorder = false;
+        StageInput.blockResizeDirection = 0;
         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-        return false;
+        return;
     }
 }

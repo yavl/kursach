@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -27,6 +26,7 @@ public class StageInput implements InputProcessor {
     public static Block tempBlock;
     private Vector2 dragOld = new Vector2(); // для перемещения камеры кнопкой мыши
     private Vector2 dragNew = new Vector2();
+    public static int blockResizeDirection = 0;  //0 - ничего не делать, 1 - вверх, 2 - направо и т.д.
 
     public StageInput(Stage stage, StageManager stageManager) {
         this.stage = stage;
@@ -85,16 +85,64 @@ public class StageInput implements InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (currentCommand == 3 && button == com.badlogic.gdx.Input.Buttons.LEFT) {
             currentCommand = 2;
-            tempBlock = null;
         }
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        if (blockResizeDirection != 0) {
+            mousePos = getNewPosition();
+            switch (blockResizeDirection) {
+                case 1:
+                    tempBlock.setHeight(mousePos.y - tempBlock.getY());
+                    if (tempBlock.getHeight() < Block.minHeight) tempBlock.setHeight(Block.minHeight);
+                    break;
+                case 2:
+                    tempBlock.setWidth(mousePos.x - tempBlock.getX());
+                    if (tempBlock.getWidth() < Block.minWidth) tempBlock.setWidth(Block.minWidth);
+                    break;
+                case 3:
+                    tempBlock.setHeight(tempBlock.getY() - mousePos.y + tempBlock.getHeight());
+                    if (tempBlock.getHeight() < Block.minHeight) tempBlock.setHeight(Block.minHeight);
+                    else tempBlock.setY(mousePos.y);
+                    break;
+                case 4:
+                    tempBlock.setWidth(tempBlock.getX() - mousePos.x + tempBlock.getWidth());
+                    if (tempBlock.getWidth() < Block.minWidth) tempBlock.setWidth(Block.minWidth);
+                    else tempBlock.setX(mousePos.x);
+                    break;
+                case 5:
+                    tempBlock.setSize(mousePos.x - tempBlock.getX(), mousePos.y - tempBlock.getY());
+                    if (tempBlock.getWidth() < Block.minWidth) tempBlock.setWidth(Block.minWidth);
+                    if (tempBlock.getHeight() < Block.minHeight) tempBlock.setHeight(Block.minHeight);
+                    break;
+                case 6:
+                    tempBlock.setSize(mousePos.x - tempBlock.getX(), tempBlock.getY() - mousePos.y + tempBlock.getHeight());
+                    if (tempBlock.getWidth() < Block.minWidth) tempBlock.setWidth(Block.minWidth);
+                    if (tempBlock.getHeight() < Block.minHeight) tempBlock.setHeight(Block.minHeight);
+                    else tempBlock.setY(mousePos.y);
+                    break;
+                case 7:
+                    tempBlock.setSize(tempBlock.getX() - mousePos.x + tempBlock.getWidth(), tempBlock.getY() - mousePos.y + tempBlock.getHeight());
+                    if (tempBlock.getWidth() < Block.minWidth) tempBlock.setWidth(Block.minWidth);
+                    else tempBlock.setX(mousePos.x);
+                    if (tempBlock.getHeight() < Block.minHeight) tempBlock.setHeight(Block.minHeight);
+                    else tempBlock.setY(mousePos.y);
+                    break;
+                case 8:
+                    tempBlock.setSize(tempBlock.getX() - mousePos.x + tempBlock.getWidth(), mousePos.y - tempBlock.getY());
+                    if (tempBlock.getWidth() < Block.minWidth) tempBlock.setWidth(Block.minWidth);
+                    else tempBlock.setX(mousePos.x);
+                    if (tempBlock.getHeight() < Block.minHeight) tempBlock.setHeight(Block.minHeight);
+                    break;
+            }
+            return false;
+        }
         if (currentCommand == 3) {
             mousePos = getNewPosition();
             tempBlock.setPosition(mousePos.x - distance.x, mousePos.y - distance.y);
+            return false;
         }
         return false;
     }

@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /* Класс который манипулирует стейджем и вводимыми пользователем командами
@@ -28,6 +29,10 @@ public class StageManager {
     SpriteBatch batch;
     Vector3 mousePos;
     public Stage UI;
+    public BitmapFont font;
+    public float fps;
+    public float sinceChange;
+    public long lastTimeCounted;
 
     public StageManager() {
         cam = new OrthographicCamera(screenWidth, screenHeight);
@@ -44,11 +49,13 @@ public class StageManager {
         createButton("If", 1);
         stageInput = new StageInput(stage, this);
         inputs = new InputMultiplexer();
-        inputs.addProcessor(stageInput);
         inputs.addProcessor(stage);
+        inputs.addProcessor(stageInput);
         inputs.addProcessor(UI);
         Gdx.input.setInputProcessor(inputs);
         mousePos = new Vector3();
+
+        font = new BitmapFont();
     }
 
     public void createButton(String text, final int command) {
@@ -86,27 +93,44 @@ public class StageManager {
         cam.unproject(mousePos);
 
         if (stageInput.currentCommand == 2) {
-            for (Block block: MainScreen.mainBlocks) {
-                if (block.hoveringOverBorder(mousePos.x, mousePos.y)) {
-                }
+            /*for (Block block: MainScreen.mainBlocks) {
+                block.hoveringOverBorder(mousePos.x, mousePos.y);
+            }*/
+            for (int i = 0; i < MainScreen.mainBlocks.size(); i++) {
+                MainScreen.mainBlocks.get(i).hoveringOverBorder(mousePos.x, mousePos.y);
             }
         }
     }
 
     public void stageAct() {
+        checkHovering();
         stage.act();
         UI.act();
-        checkHovering();
     }
 
     public void update(float dt) {
         cam.update();
         stage.getBatch().setProjectionMatrix(cam.combined);
         stageInput.handleInput(dt);
+        updateFPS();
     }
 
     public void draw() {
         stage.draw();
         UI.draw();
+        batch.begin();
+        font.draw(batch, (int)fps + " fps", 3, screenHeight - 3);
+        batch.end();
+    }
+
+    public void updateFPS() {
+        long delta = TimeUtils.timeSinceMillis(lastTimeCounted);
+        lastTimeCounted = TimeUtils.millis();
+
+        sinceChange += delta;
+        if(sinceChange >= 1000) {
+            sinceChange = 0;
+            fps = Gdx.graphics.getFramesPerSecond();
+        }
     }
 }
