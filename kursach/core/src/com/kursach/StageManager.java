@@ -1,24 +1,18 @@
 package com.kursach;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /* Класс который манипулирует стейджем и вводимыми пользователем командами
  */
@@ -32,6 +26,8 @@ public class StageManager {
     StageInput stageInput;
     InputMultiplexer inputs;
     SpriteBatch batch;
+    Vector3 mousePos;
+    public Stage UI;
 
     public StageManager() {
         cam = new OrthographicCamera(screenWidth, screenHeight);
@@ -42,30 +38,20 @@ public class StageManager {
         FitViewport viewp = new FitViewport(screenWidth, screenHeight, cam);
         batch = new SpriteBatch();
         stage = new Stage(viewp, batch);
+        UI = new Stage(new FitViewport(screenWidth, screenHeight), batch);
 
-        createButton();
+
+        createButton("If", 1);
         stageInput = new StageInput(stage, this);
         inputs = new InputMultiplexer();
         inputs.addProcessor(stageInput);
         inputs.addProcessor(stage);
+        inputs.addProcessor(UI);
         Gdx.input.setInputProcessor(inputs);
+        mousePos = new Vector3();
     }
 
-
-
-    /*public void createNewBlock() {
-        float width = Math.abs(touchedPos.x - releasedPos.x);
-        float height = Math.abs(touchedPos.y - releasedPos.y);
-        if (currentCommand == 1) {
-            If block = new If(Math.min(touchedPos.x, releasedPos.x), Math.min(touchedPos.y, releasedPos.y), width, height);
-            MainScreen.mainBlocks.add(block);
-            addActor(block);
-
-            System.out.println("New if have been created");
-        }
-    }*/
-
-    public void createButton() {
+    public void createButton(String text, final int command) {
         TextButton button;
         TextButton.TextButtonStyle textButtonStyle;
         BitmapFont font = new BitmapFont();
@@ -77,14 +63,15 @@ public class StageManager {
         textButtonStyle.up = skin.getDrawable("button");
         textButtonStyle.down = skin.getDrawable("button");
         textButtonStyle.checked = skin.getDrawable("button");
-        button = new TextButton("If", textButtonStyle);
+        button = new TextButton(text, textButtonStyle);
         button.setPosition(0, 0);
-        stage.addActor(button);
+        button.setSize(128, 64);
+        UI.addActor(button);
         button.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("If");
-                stageInput.currentCommand = 1;
+                stageInput.currentCommand = command;
             }
         } );
         System.out.println(button.getWidth() + ", " + button.getHeight());
@@ -95,9 +82,12 @@ public class StageManager {
     }
 
     public void checkHovering() {
+        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        cam.unproject(mousePos);
+
         if (stageInput.currentCommand == 2) {
             for (Block block: MainScreen.mainBlocks) {
-                if (block.hoveringOverBorder(stageInput.mousePos.x, stageInput.mousePos.y)) {
+                if (block.hoveringOverBorder(mousePos.x, mousePos.y)) {
                 }
             }
         }
@@ -105,6 +95,7 @@ public class StageManager {
 
     public void stageAct() {
         stage.act();
+        UI.act();
         checkHovering();
     }
 
@@ -112,5 +103,10 @@ public class StageManager {
         cam.update();
         stage.getBatch().setProjectionMatrix(cam.combined);
         stageInput.handleInput(dt);
+    }
+
+    public void draw() {
+        stage.draw();
+        UI.draw();
     }
 }

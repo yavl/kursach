@@ -1,10 +1,11 @@
 package com.kursach;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -29,7 +30,6 @@ public class Block extends Actor {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (StageInput.currentCommand == 2) {
-                    System.out.println("working");
                     clickEvent(x, y);
                 }
                 return false;
@@ -38,7 +38,6 @@ public class Block extends Actor {
     }
 
     public void clickEvent(float x, float y) {
-        System.out.println("Moving");
         StageInput.currentCommand = 3;
         StageInput.tempBlock = this;
         StageInput.distance.set(x, y);
@@ -81,22 +80,50 @@ public class Block extends Actor {
         float y1 = getY() - 2;
         float x2 = getX() + getWidth() + 2;
         float y2 = getY() + getHeight() + 2;
+
+        //Проверяется лежит ли мышь:
+        if (x1 <= mousePositionX && mousePositionX <= x1 + 4) {
+            if (y1 <= mousePositionY && y1 + 4 >= mousePositionY) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Crosshair);
+                return true;
+            }
+            else if (y2 - 4 <= mousePositionY && y2 >= mousePositionY) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Crosshair);
+                return true;
+            }
+        }  //В нижних точках
+        if (x2 - 4 <= mousePositionX && mousePositionX <= x2) {
+            if (y1 <= mousePositionY && y1 + 4 >= mousePositionY) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Crosshair);
+                return true;
+            }
+            else if (y2 - 4 <= mousePositionY && y2 >= mousePositionY) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Crosshair);
+                return true;
+            }
+        }  //В верхних точках
+
         if (x1 <= mousePositionX && mousePositionX <= x2) {
             if (y1 <= mousePositionY && mousePositionY <= y1 + 4) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
                 return true;
             }
             else if (y2 - 4 <= mousePositionY && mousePositionY <= y2) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
                 return true;
             }
-        }
+        }  //В горизонтальной прямой
         if (y1 <= mousePositionY && mousePositionY <= y2) {
             if (x1 <= mousePositionX && mousePositionX <= x1 + 4) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
                 return true;
             }
             else if (x2 - 4 <= mousePositionX && mousePositionX <= x2) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
                 return true;
             }
-        }
+        }  //В вертикальной прямой
+        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
         return false;
     }
 }
