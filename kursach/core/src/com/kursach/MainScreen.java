@@ -36,8 +36,7 @@ public class MainScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        Gdx.gl.glViewport(0, 0, width, height);
-        stageManager.stage.getViewport().update(width, height, true);
+        stageManager.stage.getViewport().update(width, height);
     }
 
     @Override

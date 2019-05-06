@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /* Класс который манипулирует стейджем и вводимыми пользователем командами
  */
@@ -40,7 +41,7 @@ public class StageManager {
         cam.zoom = 1f;
         cam.update();
 
-        FitViewport viewp = new FitViewport(screenWidth, screenHeight, cam);
+        ScreenViewport viewp = new ScreenViewport(cam);
         batch = new SpriteBatch();
         stage = new Stage(viewp, batch);
         UI = new Stage(new FitViewport(screenWidth, screenHeight), batch);
