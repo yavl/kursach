@@ -1,7 +1,9 @@
 package com.kursach.custom;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,10 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 
@@ -42,11 +43,18 @@ public class MyWindow extends Table {
     public MyWindow (String title, Skin skin) {
         this(title, skin.get(com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle.class));
         setSkin(skin);
-    }
+        setKeepWithinStage(false);
+        final Button closeButton = new TextButton("X", skin);
+        closeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setVisible(false);
+            }
+        });
+        getTitleTable().add(closeButton).size(10, 10).padRight(0).padTop(0);
 
-    public MyWindow (String title, Skin skin, String styleName) {
-        this(title, skin.get(styleName, com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle.class));
-        setSkin(skin);
+        setClip(false);
+        setTransform(true);
     }
 
     public MyWindow (String title, com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle style) {
@@ -62,7 +70,7 @@ public class MyWindow extends Table {
                 if (drawTitleTable) super.draw(batch, parentAlpha);
             }
         };
-        titleTable.add(titleLabel).expandX().fillX().minWidth(0);
+        titleTable.add(titleLabel).expandX().fillX().minWidth(50);
         addActor(titleTable);
 
         setStyle(style);
@@ -109,6 +117,7 @@ public class MyWindow extends Table {
             }
 
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 dragging = false;
             }
 
@@ -158,6 +167,29 @@ public class MyWindow extends Table {
             }
 
             public boolean mouseMoved (InputEvent event, float x, float y) {
+                int count = 0;
+                /*if ((edge & (Align.left | Align.right)) != 0) {
+                    count++;
+                }
+                if ((edge & Align.bottom) != 0) {
+
+                }*/
+                if ((edge & (Align.bottom)) != 0) {
+                    count = 1;
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
+                }
+                else if ((edge & (Align.left | Align.right)) != 0) {
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
+                }
+                else {
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                }
+                if ((edge & (Align.left | Align.right)) != 0) {
+                    count++;
+                }
+                if (count == 2) {
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Crosshair);
+                }
                 updateEdge(x, y);
                 return isModal;
             }
