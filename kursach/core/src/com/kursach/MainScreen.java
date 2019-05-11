@@ -37,6 +37,7 @@ public class MainScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stageManager.stage.getViewport().update(width, height);
+        stageManager.UI.onResize(width, height);
     }
 
     @Override
