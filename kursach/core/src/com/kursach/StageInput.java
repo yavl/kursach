@@ -62,6 +62,10 @@ public class StageInput implements InputProcessor {
             System.out.println("Adjusting");
             currentCommand = 2;
         }
+        else if (keycode == Input.Keys.NUM_2) {
+            System.out.println("Dragging");
+            currentCommand = 3;
+        }
         return false;
     }
 
@@ -108,67 +112,11 @@ public class StageInput implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if (currentCommand == 3 && button == com.badlogic.gdx.Input.Buttons.LEFT) {
-            currentCommand = 2;
-        }
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if (blockResizeDirection != 0) {
-            mousePos = getNewPosition();
-            switch (blockResizeDirection) {
-                case 1:
-                    tempBlock.setHeight(mousePos.y - tempBlock.getY());
-                    if (tempBlock.getHeight() < Block.minHeight) tempBlock.setHeight(Block.minHeight);
-                    break;
-                case 2:
-                    tempBlock.setWidth(mousePos.x - tempBlock.getX());
-                    if (tempBlock.getWidth() < Block.minWidth) tempBlock.setWidth(Block.minWidth);
-                    break;
-                case 3:
-                    tempBlock.setHeight(tempBlock.getY() - mousePos.y + tempBlock.getHeight());
-                    if (tempBlock.getHeight() < Block.minHeight) tempBlock.setHeight(Block.minHeight);
-                    else tempBlock.setY(mousePos.y);
-                    break;
-                case 4:
-                    tempBlock.setWidth(tempBlock.getX() - mousePos.x + tempBlock.getWidth());
-                    if (tempBlock.getWidth() < Block.minWidth) tempBlock.setWidth(Block.minWidth);
-                    else tempBlock.setX(mousePos.x);
-                    break;
-                case 5:
-                    tempBlock.setSize(mousePos.x - tempBlock.getX(), mousePos.y - tempBlock.getY());
-                    if (tempBlock.getWidth() < Block.minWidth) tempBlock.setWidth(Block.minWidth);
-                    if (tempBlock.getHeight() < Block.minHeight) tempBlock.setHeight(Block.minHeight);
-                    break;
-                case 6:
-                    tempBlock.setSize(mousePos.x - tempBlock.getX(), tempBlock.getY() - mousePos.y + tempBlock.getHeight());
-                    if (tempBlock.getWidth() < Block.minWidth) tempBlock.setWidth(Block.minWidth);
-                    if (tempBlock.getHeight() < Block.minHeight) tempBlock.setHeight(Block.minHeight);
-                    else tempBlock.setY(mousePos.y);
-                    break;
-                case 7:
-                    tempBlock.setSize(tempBlock.getX() - mousePos.x + tempBlock.getWidth(), tempBlock.getY() - mousePos.y + tempBlock.getHeight());
-                    if (tempBlock.getWidth() < Block.minWidth) tempBlock.setWidth(Block.minWidth);
-                    else tempBlock.setX(mousePos.x);
-                    if (tempBlock.getHeight() < Block.minHeight) tempBlock.setHeight(Block.minHeight);
-                    else tempBlock.setY(mousePos.y);
-                    break;
-                case 8:
-                    tempBlock.setSize(tempBlock.getX() - mousePos.x + tempBlock.getWidth(), mousePos.y - tempBlock.getY());
-                    if (tempBlock.getWidth() < Block.minWidth) tempBlock.setWidth(Block.minWidth);
-                    else tempBlock.setX(mousePos.x);
-                    if (tempBlock.getHeight() < Block.minHeight) tempBlock.setHeight(Block.minHeight);
-                    break;
-            }
-            return false;
-        }
-        if (currentCommand == 3) {
-            mousePos = getNewPosition();
-            tempBlock.setPosition(mousePos.x - distance.x, mousePos.y - distance.y);
-            return false;
-        }
         return false;
     }
 

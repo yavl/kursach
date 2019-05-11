@@ -6,17 +6,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import com.kursach.StageInput;
 
 /** A table that can be dragged and act as a modal window. The top padding is used as the window's title height.
  * <p>
@@ -35,6 +32,7 @@ public class MyWindow extends Table {
     Label titleLabel;
     Table titleTable;
     boolean drawTitleTable;
+    boolean overBorder = false;
 
     protected int edge;
     protected boolean dragging;
@@ -97,7 +95,7 @@ public class MyWindow extends Table {
             }
 
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if (button == 0) {
+                if (button == 0 && StageInput.currentCommand == 2) {
                     updateEdge(x, y);
                     dragging = edge != 0;
                     startX = x;
@@ -113,7 +111,10 @@ public class MyWindow extends Table {
             }
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
-                if (!dragging) return;
+                if (StageInput.currentCommand == 3) {
+
+                }
+                if (!dragging || StageInput.currentCommand != 2) return;
                 float width = getWidth(), height = getHeight();
                 float windowX = getX(), windowY = getY();
 
@@ -126,6 +127,7 @@ public class MyWindow extends Table {
                     float amountX = x - startX, amountY = y - startY;
                     windowX += amountX;
                     windowY += amountY;
+
                 }
                 if ((edge & Align.left) != 0) {
                     float amountX = x - startX;
