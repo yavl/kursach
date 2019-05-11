@@ -2,6 +2,7 @@ package com.kursach;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,10 +12,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kursach.custom.MyWindow;
 
 /* Класс который манипулирует стейджем и вводимыми пользователем командами
  */
@@ -63,7 +67,7 @@ public class StageManager {
         TextButton button;
         TextButton.TextButtonStyle textButtonStyle;
         BitmapFont font = new BitmapFont();
-        Skin skin = new Skin();
+        Skin skin = new Skin(Gdx.files.internal("DefaultSkin/uiskin.json"));
         TextureAtlas buttonAtlas = new TextureAtlas(Gdx.files.internal("buttons/button.atlas"));
         skin.addRegions(buttonAtlas);
         textButtonStyle = new TextButton.TextButtonStyle();
@@ -104,7 +108,7 @@ public class StageManager {
     }
 
     public void stageAct() {
-        checkHovering();
+        //checkHovering();
         stage.act();
         UI.act();
     }

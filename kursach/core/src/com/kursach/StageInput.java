@@ -6,7 +6,12 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.kursach.custom.MyWindow;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,9 +79,29 @@ public class StageInput implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (currentCommand == 1 && button == com.badlogic.gdx.Input.Buttons.LEFT) {
             touchedPos = getNewPosition();
-            Block newBlock = new If(touchedPos.x - Block.defaultWidth / 2, touchedPos.y - Block.defaultHeight / 2, stageManager.cam);
-            stage.addActor(newBlock);
-            MainScreen.mainBlocks.add(newBlock);
+           // Block newBlock = new If(touchedPos.x - Block.defaultWidth / 2, touchedPos.y - Block.defaultHeight / 2, stageManager.cam);
+            //stage.addActor(newBlock);
+            //MainScreen.mainBlocks.add(newBlock);
+
+            Skin skin = new Skin(Gdx.files.internal("DefaultSkin/uiskin.json"));
+
+            TextButton connectButton = new TextButton("Connect", skin);
+            connectButton.setHeight(30);
+            //stage.addActor(connectButton);
+            connectButton.addListener(new ChangeListener() {
+                @Override
+                public void changed (ChangeListener.ChangeEvent event, Actor actor) {
+                    System.out.println("nazhato");
+                }
+            });
+
+            MyWindow window = new MyWindow("Title", skin);
+            window.setResizable(true);
+            window.setResizeBorder(8);
+            window.setKeepWithinStage(false);
+            window.setPosition(touchedPos.x, touchedPos.y);
+            window.add(connectButton);
+            stage.addActor(window);
         }
         return false;
     }
