@@ -32,6 +32,7 @@ public class MyWindow extends Table {
     private com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle style;
     boolean isMovable = true, isModal, isResizable;
     int resizeBorder = 8;
+    private int variableIndex = 0;
     boolean keepWithinStage = true;
     Label titleLabel;
     Table titleTable;
@@ -61,7 +62,6 @@ public class MyWindow extends Table {
                 }
             });
             getTitleTable().add(renameButton).size(10, 10).padRight(0).padTop(0);
-
         }
 
         Button addVariableField = new TextButton("+", skin);
@@ -101,16 +101,18 @@ public class MyWindow extends Table {
 
     public void addAtIndex(int index, Actor actor) {
         SnapshotArray<Actor> temp = new SnapshotArray<Actor>(getChildren());
-        for (int i = index; i < getChildren().size; i++) {
+        for (int i = index + variableIndex; i < getChildren().size; i++) {
             removeActor(getChildren().get(i));
             i--;
         }
         add(actor).expandX().fillX(); // делали для textfield
+        System.out.println(variableIndex);
         row();
-        for (int i = index; i < temp.size; i++) {
+        for (int i = index + variableIndex; i < temp.size; i++) {
             add(temp.get(i)).expandX().fillX();
             row();
         }
+        variableIndex++;
     }
 
     public MyWindow (String title, com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle style) {
@@ -436,9 +438,16 @@ public class MyWindow extends Table {
         }
     }
 
-    protected void sizeChange() {
+    public void sizeChange() {
         for (int i = 1; i < getChildren().size; i++) {
             getChildren().get(i).setWidth(getWidth()-2);
         }
+    }
+
+    @Override
+    public boolean removeActor (Actor actor) {
+        if (actor.getClass() == VariableField.class)
+            variableIndex--;
+        return removeActor(actor, true);
     }
 }
