@@ -19,7 +19,7 @@ public class VariableField extends Table {
                 return false;
             }
         });
-        add(textField);
+        add(textField).expand().fill();
         final Button closeButton = new TextButton("X", skin);
         closeButton.addListener(new ClickListener() {
             @Override
