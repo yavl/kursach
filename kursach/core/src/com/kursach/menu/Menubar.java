@@ -26,7 +26,6 @@ public class Menubar extends Table {
             }
         });
         TextButton fake = new TextButton("fake hidden button", skin); // чтобы взять стиль из кнопки
-        fileMenu.setWidth(999);
         fileMenu.getStyle().background = fake.getBackground(); // заменяет фоны всех MenubarSelectBox (?)
         add(fileMenu);
 
