@@ -79,16 +79,6 @@ public class StageManager {
 
     }
 
-    public void checkHovering() {
-        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-        cam.unproject(mousePos);
-
-        if (stageInput.currentCommand == 2) {
-            for (int i = 0; i < MainScreen.mainBlocks.size(); i++) {
-                MainScreen.mainBlocks.get(i).hoveringOverBorder(mousePos.x, mousePos.y);
-            }
-        }
-    }
 
     public void stageAct() {
         //checkHovering();

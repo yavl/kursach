@@ -1,7 +1,6 @@
 package com.kursach.menu;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -24,7 +23,7 @@ public class MenuManager {
     private TextButton button;
     private Label fpsLabel;
     private Skin skin;
-    private MenubarVlad menubar;
+    private Menubar menubar;
 
     public MenuManager(StageInput stageInput, Skin skin) {
         this.stageInput = stageInput;
@@ -46,7 +45,7 @@ public class MenuManager {
         fpsLabel.setX(windowWidth - fpsLabel.getWidth());
         fpsLabel.setY(windowHeight - fpsLabel.getHeight());
 
-        menubar = new MenubarVlad(skin);
+        menubar = new Menubar(skin);
         menubar.setPosition(0, windowHeight - menubar.getHeight());
         stage.addActor(menubar);
         stage.addActor(fpsLabel);

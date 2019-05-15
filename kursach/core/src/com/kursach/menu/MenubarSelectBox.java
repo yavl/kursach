@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class VladSelectBox extends SelectBox {
-    public VladSelectBox(Skin skin, String name) {
+public class MenubarSelectBox extends SelectBox {
+    public MenubarSelectBox(Skin skin, String name) {
         super(skin);
         setName(name);
     }

@@ -50,6 +50,7 @@ public class MyWindow extends Table {
 
         setSkin(skin);
         top();
+        setKeepWithinStage(false);
 
         if (isMain) {
             Button renameButton = new TextButton("R", skin);
@@ -61,7 +62,6 @@ public class MyWindow extends Table {
             });
             getTitleTable().add(renameButton).size(10, 10).padRight(0).padTop(0);
 
-            setKeepWithinStage(false);
         }
 
         Button addVariableField = new TextButton("+", skin);
