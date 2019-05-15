@@ -1,6 +1,7 @@
-package com.kursach.custom;
+package com.kursach.window;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.kursach.StageInput;
 
 /** A table that can be dragged and act as a modal window. The top padding is used as the window's title height.
@@ -37,11 +39,33 @@ public class MyWindow extends Table {
 
     protected int edge;
     protected boolean dragging;
+    private Skin skin;
 
     public MyWindow (String title, Skin skin) {
         this(title, skin.get(com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle.class));
+        this.skin = skin;
         setSkin(skin);
         setKeepWithinStage(false);
+        top();
+
+        Button renameButton = new TextButton("R", skin);
+        renameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                onRenameClick();
+            }
+        });
+        getTitleTable().add(renameButton).size(10, 10).padRight(0).padTop(0);
+
+        Button addVariableField = new TextButton("+", skin);
+        addVariableField.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                onClick();
+            }
+        });
+        getTitleTable().add(addVariableField).size(10, 10).padRight(0).padTop(0);
+
         final Button closeButton = new TextButton("X", skin);
         closeButton.addListener(new ClickListener() {
             @Override
@@ -50,8 +74,43 @@ public class MyWindow extends Table {
             }
         });
         getTitleTable().add(closeButton).size(10, 10).padRight(0).padTop(0);
+
         setClip(false);
         setTransform(true);
+    }
+
+    public void onClick() {
+        TextField textField = new TextField("", skin);
+        textField.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ENTER) {
+                    getStage().unfocusAll();
+                }
+                return false;
+            }
+        });
+        addAtIndex(1, textField);
+    }
+
+    public void onRenameClick() {
+
+    }
+
+    public void addAtIndex(int index, Actor actor) {
+        SnapshotArray<Actor> temp = new SnapshotArray<Actor>(getChildren());
+        System.out.println(getChildren().size);
+        for (int i = index; i < getChildren().size; i++) {
+            System.out.println(getChildren().get(i).getClass());
+            removeActor(getChildren().get(i));
+            i--;
+        }
+        add(actor).fillX(); // делали для textfield
+        row();
+        for (int i = index; i < temp.size; i++) {
+            add(temp.get(i)).fillX();
+            row();
+        }
     }
 
     public MyWindow (String title, com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle style) {
@@ -377,6 +436,13 @@ public class MyWindow extends Table {
             this.background = style.background;
             this.titleFont = style.titleFont;
             this.titleFontColor = new Color(style.titleFontColor);
+        }
+    }
+
+    @Override
+    protected void sizeChanged() {
+        for (int i = 1; i < getChildren().size; i++) {
+            getChildren().get(i).setWidth(getWidth()-2);
         }
     }
 }

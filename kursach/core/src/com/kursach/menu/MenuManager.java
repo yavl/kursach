@@ -24,6 +24,7 @@ public class MenuManager {
     private TextButton button;
     private Label fpsLabel;
     private Skin skin;
+    private Menubar menubar;
 
     public MenuManager(StageInput stageInput, Skin skin) {
         this.stageInput = stageInput;
@@ -42,7 +43,13 @@ public class MenuManager {
         input = new MenuInput();
         fpsLabel = new Label("asd", skin);
         fpsLabel.setColor(0, 0, 0, 1.0f);
+        fpsLabel.setX(windowWidth - fpsLabel.getWidth());
         fpsLabel.setY(windowHeight - fpsLabel.getHeight());
+
+        menubar = new Menubar(skin);
+        menubar.setSize(windowWidth, windowHeight / 2);
+        menubar.setPosition(0, windowHeight - menubar.getHeight());
+        stage.addActor(menubar);
         stage.addActor(fpsLabel);
     }
 
@@ -73,7 +80,9 @@ public class MenuManager {
 
     public void onResize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        fpsLabel.setX(width - fpsLabel.getWidth());
         fpsLabel.setY(height - fpsLabel.getHeight());
+        menubar.onResize(width, height);
     }
 
     public MenuInput getInput() {

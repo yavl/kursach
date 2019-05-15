@@ -1,11 +1,10 @@
-package com.kursach.custom;
+package com.kursach.window;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 
 public class HoverListener extends ClickListener {
     private MyWindow window;

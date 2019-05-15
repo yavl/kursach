@@ -11,8 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.kursach.custom.HoverListener;
-import com.kursach.custom.MyWindow;
+import com.kursach.window.HoverListener;
+import com.kursach.window.MyWindow;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -109,9 +109,10 @@ public class StageInput implements InputProcessor {
 
             innerWindow.setSize(400, 400);
             innerWindow.setMovable(false);
-            window.add(innerWindow).expand().bottom().fill();
+            window.add(innerWindow).expandX();
             stage.addActor(window);
             window.addListener(new HoverListener(window));
+            window.row();
         }
         return false;
     }
