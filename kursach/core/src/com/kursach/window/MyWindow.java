@@ -61,17 +61,17 @@ public class MyWindow extends Table {
             });
             getTitleTable().add(renameButton).size(10, 10).padRight(0).padTop(0);
 
-            Button addVariableField = new TextButton("+", skin);
-            addVariableField.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    onClick();
-                }
-            });
-            getTitleTable().add(addVariableField).size(10, 10);
-
             setKeepWithinStage(false);
         }
+
+        Button addVariableField = new TextButton("+", skin);
+        addVariableField.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                onClick();
+            }
+        });
+        getTitleTable().add(addVariableField).size(10, 10);
 
         final Button closeButton = new TextButton("X", skin);
         closeButton.addListener(new ClickListener() {
