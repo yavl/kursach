@@ -24,7 +24,7 @@ public class MenuManager {
     private TextButton button;
     private Label fpsLabel;
     private Skin skin;
-    private Menubar menubar;
+    private MenubarVlad menubar;
 
     public MenuManager(StageInput stageInput, Skin skin) {
         this.stageInput = stageInput;
@@ -46,8 +46,7 @@ public class MenuManager {
         fpsLabel.setX(windowWidth - fpsLabel.getWidth());
         fpsLabel.setY(windowHeight - fpsLabel.getHeight());
 
-        menubar = new Menubar(skin);
-        menubar.setSize(windowWidth, windowHeight / 2);
+        menubar = new MenubarVlad(skin);
         menubar.setPosition(0, windowHeight - menubar.getHeight());
         stage.addActor(menubar);
         stage.addActor(fpsLabel);
