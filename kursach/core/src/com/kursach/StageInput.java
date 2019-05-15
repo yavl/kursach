@@ -100,16 +100,15 @@ public class StageInput implements InputProcessor {
                 }
             });
 
-            MyWindow innerWindow = new MyWindow("if", skin);
-            MyWindow window = new MyWindow("Title", skin);
+            MyWindow innerWindow = new MyWindow("if", skin, false);
+            MyWindow window = new MyWindow("Title", skin, true);
             window.setResizable(true);
             window.setResizeBorder(8);
             window.setPosition(touchedPos.x, touchedPos.y);
             //window.add(connectButton);
 
-            innerWindow.setSize(400, 400);
             innerWindow.setMovable(false);
-            window.add(innerWindow).expandX();
+            window.add(innerWindow).expandX().fillX();
             stage.addActor(window);
             window.addListener(new HoverListener(window));
             window.row();

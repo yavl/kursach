@@ -1,7 +1,6 @@
 package com.kursach.window;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
@@ -27,6 +26,8 @@ public class MyWindow extends Table {
     static private final Vector2 tmpPosition = new Vector2();
     static private final Vector2 tmpSize = new Vector2();
     static private final int MOVE = 1 << 5;
+    private float minimumWidth = 150;
+    private float minimumHeight = 100;
 
     private com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle style;
     boolean isMovable = true, isModal, isResizable;
@@ -36,79 +37,78 @@ public class MyWindow extends Table {
     Table titleTable;
     boolean drawTitleTable;
     boolean overBorder = false;
+    boolean isMain = false;
 
     protected int edge;
     protected boolean dragging;
     private Skin skin;
 
-    public MyWindow (String title, Skin skin) {
+    public MyWindow (String title, Skin skin, boolean isMain) {
         this(title, skin.get(com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle.class));
         this.skin = skin;
+        if (isMain) this.isMain = true;
+
         setSkin(skin);
-        setKeepWithinStage(false);
         top();
 
-        Button renameButton = new TextButton("R", skin);
-        renameButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                onRenameClick();
-            }
-        });
-        getTitleTable().add(renameButton).size(10, 10).padRight(0).padTop(0);
+        if (isMain) {
+            Button renameButton = new TextButton("R", skin);
+            renameButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    onRenameClick();
+                }
+            });
+            getTitleTable().add(renameButton).size(10, 10).padRight(0).padTop(0);
 
-        Button addVariableField = new TextButton("+", skin);
-        addVariableField.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                onClick();
-            }
-        });
-        getTitleTable().add(addVariableField).size(10, 10).padRight(0).padTop(0);
+            Button addVariableField = new TextButton("+", skin);
+            addVariableField.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    onClick();
+                }
+            });
+            getTitleTable().add(addVariableField).size(10, 10);
+
+            setKeepWithinStage(false);
+        }
 
         final Button closeButton = new TextButton("X", skin);
         closeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setVisible(false);
+                close();
             }
         });
         getTitleTable().add(closeButton).size(10, 10).padRight(0).padTop(0);
 
         setClip(false);
         setTransform(true);
+        debugAll();
+    }
+
+    public void close() {
+        getParent().removeActor(this);
     }
 
     public void onClick() {
-        TextField textField = new TextField("", skin);
-        textField.addListener(new InputListener() {
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.ENTER) {
-                    getStage().unfocusAll();
-                }
-                return false;
-            }
-        });
-        addAtIndex(1, textField);
+        VariableField field = new VariableField(skin);
+        addAtIndex(1, field);
     }
 
     public void onRenameClick() {
-
     }
 
     public void addAtIndex(int index, Actor actor) {
         SnapshotArray<Actor> temp = new SnapshotArray<Actor>(getChildren());
-        System.out.println(getChildren().size);
         for (int i = index; i < getChildren().size; i++) {
-            System.out.println(getChildren().get(i).getClass());
             removeActor(getChildren().get(i));
             i--;
         }
-        add(actor).fillX(); // делали для textfield
+        add(actor).expandX().fillX(); // делали для textfield
         row();
         for (int i = index; i < temp.size; i++) {
-            add(temp.get(i)).fillX();
+            add(temp.get(i)).expandX().fillX();
             row();
         }
     }
@@ -130,7 +130,7 @@ public class MyWindow extends Table {
         addActor(titleTable);
 
         setStyle(style);
-        setWidth(150);
+        setWidth(200);
         setHeight(150);
 
         addCaptureListener(new InputListener() {
@@ -178,10 +178,8 @@ public class MyWindow extends Table {
             }
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
-                if (StageInput.currentCommand == 3) {
-
-                }
                 if (!dragging || StageInput.currentCommand != 2) return;
+                sizeChange();
                 float width = getWidth(), height = getHeight();
                 float windowX = getX(), windowY = getY();
 
@@ -223,17 +221,15 @@ public class MyWindow extends Table {
                         amountY = stage.getHeight() - windowY - height;
                     height += amountY;
                 }
-                setBounds(Math.round(windowX), Math.round(windowY), Math.round(width), Math.round(height));
+                if (width >= minWidth) setWidth(Math.round(width));
+                if (height >= minHeight) setHeight(Math.round(height));
+                setPosition(Math.round(windowX), Math.round(windowY));
             }
 
             public boolean mouseMoved (InputEvent event, float x, float y) {
+                if (StageInput.currentCommand != 2) return false;
                 int count = 0;
-                /*if ((edge & (Align.left | Align.right)) != 0) {
-                    count++;
-                }
-                if ((edge & Align.bottom) != 0) {
 
-                }*/
                 if ((edge & (Align.bottom)) != 0) {
                     count = 1;
                     Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
@@ -271,6 +267,7 @@ public class MyWindow extends Table {
             }
         });
     }
+
 
     public void setStyle (com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle style) {
         if (style == null) throw new IllegalArgumentException("style cannot be null.");
@@ -439,8 +436,7 @@ public class MyWindow extends Table {
         }
     }
 
-    @Override
-    protected void sizeChanged() {
+    protected void sizeChange() {
         for (int i = 1; i < getChildren().size; i++) {
             getChildren().get(i).setWidth(getWidth()-2);
         }
