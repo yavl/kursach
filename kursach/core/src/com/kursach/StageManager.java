@@ -84,9 +84,6 @@ public class StageManager {
         cam.unproject(mousePos);
 
         if (stageInput.currentCommand == 2) {
-            /*for (Block block: MainScreen.mainBlocks) {
-                block.hoveringOverBorder(mousePos.x, mousePos.y);
-            }*/
             for (int i = 0; i < MainScreen.mainBlocks.size(); i++) {
                 MainScreen.mainBlocks.get(i).hoveringOverBorder(mousePos.x, mousePos.y);
             }

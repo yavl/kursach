@@ -29,7 +29,6 @@ public class StageInput implements InputProcessor {
     public StageManager stageManager;
     public Map<String, Integer> commandMap;
     public static int currentCommand;
-    public static Block tempBlock;
     private Vector2 dragOld = new Vector2(); // для перемещения камеры кнопкой мыши
     private Vector2 dragNew = new Vector2();
     public static int blockResizeDirection = 0;  //0 - ничего не делать, 1 - вверх, 2 - направо и т.д.
@@ -84,15 +83,11 @@ public class StageInput implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (currentCommand == 1 && button == com.badlogic.gdx.Input.Buttons.LEFT) {
             touchedPos = getNewPosition();
-           // Block newBlock = new If(touchedPos.x - Block.defaultWidth / 2, touchedPos.y - Block.defaultHeight / 2, stageManager.cam);
-            //stage.addActor(newBlock);
-            //MainScreen.mainBlocks.add(newBlock);
 
             Skin skin = new Skin(Gdx.files.internal("DefaultSkin/uiskin.json"));
 
             TextButton connectButton = new TextButton("Connect", skin);
             connectButton.setHeight(30);
-            //stage.addActor(connectButton);
             connectButton.addListener(new ChangeListener() {
                 @Override
                 public void changed (ChangeListener.ChangeEvent event, Actor actor) {
@@ -105,7 +100,6 @@ public class StageInput implements InputProcessor {
             window.setResizable(true);
             window.setResizeBorder(8);
             window.setPosition(touchedPos.x, touchedPos.y);
-            //window.add(connectButton);
 
             innerWindow.setMovable(false);
             window.add(innerWindow).expandX().fillX();
