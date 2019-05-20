@@ -5,11 +5,9 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kursach.menu.MenuManager;
@@ -63,22 +61,8 @@ public class StageManager {
     }
 
     public void createButton(String text, final int command) {
-        TextButton.TextButtonStyle textButtonStyle;
-        BitmapFont font = new BitmapFont();
-        TextureAtlas buttonAtlas = new TextureAtlas(Gdx.files.internal("buttons/button.atlas"));
-        skin.addRegions(buttonAtlas);
-        textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = font;
-        textButtonStyle.up = skin.getDrawable("button");
-        textButtonStyle.down = skin.getDrawable("button");
-        textButtonStyle.checked = skin.getDrawable("button");
         UI.createButton(text, command);
     }
-
-    public void buttonDebug() {
-
-    }
-
 
     public void stageAct() {
         //checkHovering();

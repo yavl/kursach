@@ -23,6 +23,9 @@ public class Menubar extends Table {
                 if (fileMenu.getSelected().equals("Exit")) {
                     Gdx.app.exit();
                 }
+                if (fileMenu.getSelected().equals("Open")) {
+                    Gdx.app.exit();
+                }
             }
         });
         TextButton fake = new TextButton("fake hidden button", skin); // чтобы взять стиль из кнопки

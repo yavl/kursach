@@ -27,7 +27,7 @@ public class MyWindow extends Table {
     static private final Vector2 tmpSize = new Vector2();
     static private final int MOVE = 1 << 5;
     private float minimumWidth = 150;
-    private float minimumHeight = 100;
+    private float minimumHeight = 150;
 
     private com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle style;
     boolean isMovable = true, isModal, isResizable;
@@ -43,26 +43,26 @@ public class MyWindow extends Table {
     protected int edge;
     protected boolean dragging;
     private Skin skin;
+    private Block parentBlock;
 
-    public MyWindow (String title, Skin skin, boolean isMain) {
+    public MyWindow (String title, Skin skin, Block parentBlock) {
         this(title, skin.get(com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle.class));
         this.skin = skin;
-        if (isMain) this.isMain = true;
+        isMain = true;
+        this.parentBlock = parentBlock;
 
         setSkin(skin);
         top();
         setKeepWithinStage(false);
 
-        if (isMain) {
-            Button renameButton = new TextButton("R", skin);
-            renameButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    onRenameClick();
-                }
-            });
-            getTitleTable().add(renameButton).size(10, 10).padRight(0).padTop(0);
-        }
+        Button renameButton = new TextButton("R", skin);
+        renameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                onRenameClick();
+            }
+        });
+        getTitleTable().add(renameButton).size(10, 10).padRight(0).padTop(0);
 
         Button addVariableField = new TextButton("+", skin);
         addVariableField.addListener(new ClickListener() {
@@ -85,10 +85,61 @@ public class MyWindow extends Table {
         setClip(false);
         setTransform(true);
         debugAll();
+        setResizable(true);
+        setResizeBorder(8);
+    }
+
+    public MyWindow (String title, Skin skin) {
+        this(title, skin.get(com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle.class));
+        this.skin = skin;
+        this.parentBlock = parentBlock;
+
+        setSkin(skin);
+        top();
+        setKeepWithinStage(false);
+
+        Button addVariableField = new TextButton("+", skin);
+        addVariableField.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                onClick();
+            }
+        });
+        getTitleTable().add(addVariableField).size(10, 10);
+
+        Button saveButton = new TextButton("S", skin);
+        saveButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                save();
+            }
+        });
+        getTitleTable().add(saveButton).size(10, 10);
+
+        final Button closeButton = new TextButton("X", skin);
+        closeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                close();
+            }
+        });
+        getTitleTable().add(closeButton).size(10, 10);
+
+        setClip(false);
+        setTransform(true);
+        debugAll();
+        setMovable(false);
+    }
+
+    public void save() {
+
     }
 
     public void close() {
         getParent().removeActor(this);
+        if (isMain) {
+            parentBlock.remove();
+        }
     }
 
     public void onClick() {
@@ -194,7 +245,6 @@ public class MyWindow extends Table {
                     float amountX = x - startX, amountY = y - startY;
                     windowX += amountX;
                     windowY += amountY;
-
                 }
                 if ((edge & Align.left) != 0) {
                     float amountX = x - startX;
@@ -223,9 +273,16 @@ public class MyWindow extends Table {
                         amountY = stage.getHeight() - windowY - height;
                     height += amountY;
                 }
-                if (width >= minWidth) setWidth(Math.round(width));
-                if (height >= minHeight) setHeight(Math.round(height));
+                if (width >= minWidth) {
+                    setWidth(Math.round(width));
+                    parentBlock.sizeChanged();
+                }
+                if (height >= minHeight) {
+                    setHeight(Math.round(height));
+                    parentBlock.sizeChanged();
+                }
                 setPosition(Math.round(windowX), Math.round(windowY));
+                parentBlock.changePosition();
             }
 
             public boolean mouseMoved (InputEvent event, float x, float y) {

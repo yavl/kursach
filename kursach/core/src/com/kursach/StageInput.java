@@ -11,8 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.kursach.window.HoverListener;
-import com.kursach.window.MyWindow;
+import com.kursach.window.Block;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,10 +61,6 @@ public class StageInput implements InputProcessor {
             System.out.println("Adjusting");
             currentCommand = 2;
         }
-        else if (keycode == Input.Keys.NUM_2) {
-            System.out.println("Dragging");
-            currentCommand = 3;
-        }
         return false;
     }
 
@@ -95,17 +90,8 @@ public class StageInput implements InputProcessor {
                 }
             });
 
-            MyWindow innerWindow = new MyWindow("if", skin, false);
-            MyWindow window = new MyWindow("Title", skin, true);
-            window.setResizable(true);
-            window.setResizeBorder(8);
-            window.setPosition(touchedPos.x, touchedPos.y);
-
-            innerWindow.setMovable(false);
-            window.add(innerWindow).expandX().fillX();
-            stage.addActor(window);
-            window.addListener(new HoverListener(window));
-            window.row();
+            Block block = new Block(skin, touchedPos);
+            stage.addActor(block);
         }
         return false;
     }

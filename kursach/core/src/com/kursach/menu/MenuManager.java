@@ -2,9 +2,7 @@ package com.kursach.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -27,6 +25,7 @@ public class MenuManager {
 
     public MenuManager(StageInput stageInput, Skin skin) {
         this.stageInput = stageInput;
+        this.skin = skin;
 
         int windowWidth = Gdx.graphics.getWidth();
         int windowHeight = Gdx.graphics.getHeight();
@@ -52,17 +51,8 @@ public class MenuManager {
     }
 
     public void createButton(String text, final int command) {
-        TextButton.TextButtonStyle textButtonStyle;
-        BitmapFont font = new BitmapFont();
         Skin skin = new Skin(Gdx.files.internal("DefaultSkin/uiskin.json"));
-        TextureAtlas buttonAtlas = new TextureAtlas(Gdx.files.internal("buttons/button.atlas"));
-        skin.addRegions(buttonAtlas);
-        textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = font;
-        textButtonStyle.up = skin.getDrawable("button");
-        textButtonStyle.down = skin.getDrawable("button");
-        textButtonStyle.checked = skin.getDrawable("button");
-        button = new TextButton(text, textButtonStyle);
+        button = new TextButton(text, skin);
         button.setPosition(0, 0);
         button.setSize(128, 64);
         stage.addActor(button);
@@ -73,7 +63,6 @@ public class MenuManager {
                 stageInput.currentCommand = command;
             }
         } );
-        System.out.println(button.getWidth() + ", " + button.getHeight());
     }
 
     public void onResize(int width, int height) {
