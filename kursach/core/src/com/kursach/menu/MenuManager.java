@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kursach.StageInput;
+import com.kursach.window.RenameWindow;
 
 public class MenuManager {
     private Stage stage;
@@ -22,6 +23,8 @@ public class MenuManager {
     private Label fpsLabel;
     private Skin skin;
     private Menubar menubar;
+    public static BlockStore blockStore;
+    public static RenameWindow renameWindow;
 
     public MenuManager(StageInput stageInput, Skin skin) {
         this.stageInput = stageInput;
@@ -48,6 +51,14 @@ public class MenuManager {
         menubar.setPosition(0, windowHeight - menubar.getHeight());
         stage.addActor(menubar);
         stage.addActor(fpsLabel);
+
+        blockStore = new BlockStore(skin);
+        blockStore.setPosition((windowWidth - blockStore.getWidth()) / 2, (windowHeight - blockStore.getHeight()) / 2);
+        stage.addActor(blockStore);
+
+        renameWindow = new RenameWindow(skin);
+        stage.addActor(renameWindow);
+        renameWindow.setVisible(false);
     }
 
     public void createButton(String text, final int command) {

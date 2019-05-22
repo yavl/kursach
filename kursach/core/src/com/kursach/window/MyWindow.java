@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.kursach.StageInput;
+import com.kursach.menu.BlockStore;
+import com.kursach.menu.MenuManager;
 
 /** A table that can be dragged and act as a modal window. The top padding is used as the window's title height.
  * <p>
@@ -28,6 +30,8 @@ public class MyWindow extends Table {
     static private final int MOVE = 1 << 5;
     private float minimumWidth = 150;
     private float minimumHeight = 150;
+    private static BlockStore blockStore = MenuManager.blockStore;
+    private static RenameWindow renameWindow = MenuManager.renameWindow;
 
     private com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle style;
     boolean isMovable = true, isModal, isResizable;
@@ -55,11 +59,29 @@ public class MyWindow extends Table {
         top();
         setKeepWithinStage(false);
 
+        titleLabel.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (getTapCount() >= 2) {
+                    openRenameWindow();
+                }
+            }
+        });
+
+        Button saveButton = new TextButton("S", skin);
+        saveButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                save();
+            }
+        });
+        getTitleTable().add(saveButton).size(10, 10);
+
         Button renameButton = new TextButton("R", skin);
         renameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                onRenameClick();
+                openRenameWindow();
             }
         });
         getTitleTable().add(renameButton).size(10, 10).padRight(0).padTop(0);
@@ -92,7 +114,6 @@ public class MyWindow extends Table {
     public MyWindow (String title, Skin skin) {
         this(title, skin.get(com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle.class));
         this.skin = skin;
-        this.parentBlock = parentBlock;
 
         setSkin(skin);
         top();
@@ -106,15 +127,6 @@ public class MyWindow extends Table {
             }
         });
         getTitleTable().add(addVariableField).size(10, 10);
-
-        Button saveButton = new TextButton("S", skin);
-        saveButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                save();
-            }
-        });
-        getTitleTable().add(saveButton).size(10, 10);
 
         final Button closeButton = new TextButton("X", skin);
         closeButton.addListener(new ClickListener() {
@@ -131,8 +143,12 @@ public class MyWindow extends Table {
         setMovable(false);
     }
 
-    public void save() {
+    public void openRenameWindow() {
+        renameWindow.update(this);
+    }
 
+    public void save() {
+        blockStore.addBlock(parentBlock);
     }
 
     public void close() {
@@ -145,9 +161,6 @@ public class MyWindow extends Table {
     public void onClick() {
         VariableField field = new VariableField(skin);
         addAtIndex(1, field);
-    }
-
-    public void onRenameClick() {
     }
 
     public void addAtIndex(int index, Actor actor) {
@@ -506,5 +519,14 @@ public class MyWindow extends Table {
         if (actor.getClass() == VariableField.class)
             variableIndex--;
         return removeActor(actor, true);
+    }
+
+    public void changeName(String newName) {
+        titleLabel.setText(newName);
+    }
+
+    @Override
+    public String getName() {
+        return titleLabel.getText().toString();
     }
 }
