@@ -17,7 +17,6 @@ public class MenuManager {
     private Stage stage;
     private OrthographicCamera cam;
     private SpriteBatch batch;
-    private MenuInput input;
     private StageInput stageInput;
     private TextButton button;
     private Label fpsLabel;
@@ -41,7 +40,6 @@ public class MenuManager {
         batch = new SpriteBatch();
         stage = new Stage(viewp, batch);
 
-        input = new MenuInput();
         fpsLabel = new Label("asd", skin);
         fpsLabel.setColor(0, 0, 0, 1.0f);
         fpsLabel.setX(windowWidth - fpsLabel.getWidth());
@@ -81,10 +79,6 @@ public class MenuManager {
         fpsLabel.setX(width - fpsLabel.getWidth());
         fpsLabel.setY(height - fpsLabel.getHeight());
         menubar.onResize(width, height);
-    }
-
-    public MenuInput getInput() {
-        return input;
     }
 
     public Stage getStage() {

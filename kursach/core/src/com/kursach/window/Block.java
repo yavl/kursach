@@ -94,6 +94,15 @@ public class Block extends Group {
         });
         toolbar.add(runButton).size(10, 10).padRight(0).padTop(0);
 
+        final Button ifButton = new TextButton("if", skin);
+        runButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                addIf();
+            }
+        });
+        toolbar.add(runButton).size(10, 10).padRight(0).padTop(0);
+
         addActor(window);
         addActor(argumentField);
         addActor(toolbar);
@@ -135,14 +144,13 @@ public class Block extends Group {
                     if (temp.getTitleLabel().getText().substring(0, 2).equals("if")) {
                         writeToFile("if " + temp.getCondition() + " then\n\t");
                         processCondition(temp.getChildren());
-                        writeToFile("\nend");
+                        writeToFile("end\n");
                     }
                 } break;
                 default: {
                 } break;
             }
         }
-
         try {writer.close();} catch (Exception ex) {/*ignore*/}
     }
 
@@ -183,5 +191,9 @@ public class Block extends Group {
     public void newBlock() {
         //Block block = new Block();
         //getStage().addActor(block);
+    }
+
+    public void addIf() {
+
     }
 }

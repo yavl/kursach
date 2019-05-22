@@ -9,8 +9,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kursach.window.Block;
 
 import java.util.HashMap;
@@ -30,7 +28,7 @@ public class StageInput implements InputProcessor {
     public static int currentCommand;
     private Vector2 dragOld = new Vector2(); // для перемещения камеры кнопкой мыши
     private Vector2 dragNew = new Vector2();
-    public static int blockResizeDirection = 0;  //0 - ничего не делать, 1 - вверх, 2 - направо и т.д.
+    public static Actor selected;
 
     public StageInput(Stage stage, StageManager stageManager) {
         this.stage = stage;
@@ -81,15 +79,6 @@ public class StageInput implements InputProcessor {
 
             Skin skin = new Skin(Gdx.files.internal("DefaultSkin/uiskin.json"));
 
-            TextButton connectButton = new TextButton("Connect", skin);
-            connectButton.setHeight(30);
-            connectButton.addListener(new ChangeListener() {
-                @Override
-                public void changed (ChangeListener.ChangeEvent event, Actor actor) {
-                    System.out.println("nazhato");
-                }
-            });
-
             Block block = new Block(skin, touchedPos);
             stage.addActor(block);
         }
@@ -134,16 +123,16 @@ public class StageInput implements InputProcessor {
 
     public void handleInput(float dt) {
         OrthographicCamera cam = stageManager.cam;
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             cam.translate(-camSpeed * cam.zoom * dt, 0, 0);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             cam.translate(camSpeed * cam.zoom * dt, 0, 0);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             cam.translate(0, -camSpeed * cam.zoom * dt, 0);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             cam.translate(0, camSpeed * cam.zoom * dt, 0);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {

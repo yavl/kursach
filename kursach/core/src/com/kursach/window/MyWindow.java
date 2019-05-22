@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -32,6 +33,7 @@ public class MyWindow extends Table {
     private float minimumHeight = 150;
     private static BlockStore blockStore = MenuManager.blockStore;
     private static RenameWindow renameWindow = MenuManager.renameWindow;
+    private ShapeRenderer shape;
 
     private com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle style;
     boolean isMovable = true, isModal, isResizable;
@@ -41,8 +43,8 @@ public class MyWindow extends Table {
     Label titleLabel;
     Table titleTable;
     boolean drawTitleTable;
-    boolean overBorder = false;
     boolean isMain = false;
+    boolean selected = false;
 
     protected int edge;
     protected boolean dragging;
@@ -58,15 +60,6 @@ public class MyWindow extends Table {
         setSkin(skin);
         top();
         setKeepWithinStage(false);
-
-        titleLabel.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (getTapCount() >= 2) {
-                    openRenameWindow();
-                }
-            }
-        });
 
         Button saveButton = new TextButton("S", skin);
         saveButton.addListener(new ClickListener() {
@@ -106,14 +99,21 @@ public class MyWindow extends Table {
 
         setClip(false);
         setTransform(true);
-        debugAll();
         setResizable(true);
         setResizeBorder(8);
+        addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                selected();
+            }
+        });
     }
 
     public MyWindow (String title, Skin skin) {
         this(title, skin.get(com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle.class));
         this.skin = skin;
+        shape = new ShapeRenderer();
+        shape.setColor(Color.DARK_GRAY);
 
         setSkin(skin);
         top();
@@ -148,8 +148,21 @@ public class MyWindow extends Table {
 
         setClip(false);
         setTransform(true);
-        debugAll();
         setMovable(false);
+
+        addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                selected();
+            }
+        });
+    }
+
+    public void selected() {
+        System.out.println("selected");
+        StageInput.selected = this;
+        selected = true;
+        getTitleLabel().setColor(Color.GREEN);
     }
 
     public void openRenameWindow() {

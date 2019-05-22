@@ -51,7 +51,6 @@ public class StageManager {
 
         UI = new MenuManager(stageInput, skin);
         inputs.addProcessor(UI.getStage());
-        inputs.addProcessor(UI.getInput());
 
         Gdx.input.setInputProcessor(inputs);
         mousePos = new Vector3();
