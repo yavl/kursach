@@ -47,7 +47,7 @@ public class MenuManager {
         fpsLabel.setX(windowWidth - fpsLabel.getWidth());
         fpsLabel.setY(windowHeight - fpsLabel.getHeight());
 
-        menubar = new Menubar(skin);
+        menubar = new Menubar(skin, stageInput);
         menubar.setPosition(0, windowHeight - menubar.getHeight());
         stage.addActor(menubar);
         stage.addActor(fpsLabel);
