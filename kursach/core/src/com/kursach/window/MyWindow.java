@@ -128,6 +128,15 @@ public class MyWindow extends Table {
         });
         getTitleTable().add(addVariableField).size(10, 10);
 
+        Button renameButton = new TextButton("C", skin);
+        renameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                openRenameWindow();
+            }
+        });
+        getTitleTable().add(renameButton).size(10, 10).padRight(0).padTop(0);
+
         final Button closeButton = new TextButton("X", skin);
         closeButton.addListener(new ClickListener() {
             @Override
@@ -528,5 +537,16 @@ public class MyWindow extends Table {
     @Override
     public String getName() {
         return titleLabel.getText().toString();
+    }
+
+    public String getCondition() {
+        String title = getTitleLabel().getText().toString();
+        String condition = title.substring(3);
+        return condition;
+    }
+
+    public String getFunctionName() {
+        String name = getTitleLabel().getText().toString().substring(0, 2);
+        return name;
     }
 }

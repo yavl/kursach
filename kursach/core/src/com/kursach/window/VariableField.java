@@ -7,9 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class VariableField extends Table {
+    TextField textField;
     public VariableField(Skin skin) {
         super(skin);
-        TextField textField = new TextField("", skin);
+        textField = new TextField("", skin);
         textField.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
@@ -32,5 +33,9 @@ public class VariableField extends Table {
 
     public void removeSelf() {
         getParent().removeActor(this);
+    }
+
+    public String getText() {
+        return textField.getText();
     }
 }
