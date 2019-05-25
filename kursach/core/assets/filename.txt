@@ -1,6 +1,0 @@
-n = 0
-r = 2
-if n < r then
-	print()
-
-end

@@ -14,10 +14,12 @@ import com.kursach.StageInput;
 public class Menubar extends Table {
     private Skin skin;
     private StageInput stageInput;
+    private MenuManager menuManager;
 
-    public Menubar(Skin skin, final StageInput stageInput) {
+    public Menubar(Skin skin, final StageInput stageInput, final MenuManager menuManager) {
         this.skin = skin;
         this.stageInput = stageInput;
+        this.menuManager = menuManager;
         left().top();
         setDebug(true);
 
@@ -42,6 +44,21 @@ public class Menubar extends Table {
         MenubarSelectBox editBox = new MenubarSelectBox(skin, "Edit");
         editBox.setItems("Cut", "Copy");
         add(editBox);
+
+        final MenubarSelectBox viewBox = new MenubarSelectBox(skin, "View");
+        viewBox.setItems("Blocks");
+        viewBox.getList().addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                String selected = (String) viewBox.getSelected();
+                switch (selected) {
+                    case "Blocks": {
+                        MenuManager.blockStore.setVisible(!MenuManager.blockStore.isVisible());
+                    } break;
+                }
+            }
+        });
+        add(viewBox);
 
         final MenubarSelectBox addBox = new MenubarSelectBox(skin, "Add");
         addBox.setItems("Block", "asd");

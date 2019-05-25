@@ -45,4 +45,8 @@ public class BlockStore extends Window {
         add(blockButton).expandX().fillX();
         row();
     }
+
+    public Array<Block> getBlocks() {
+        return blocks;
+    }
 }

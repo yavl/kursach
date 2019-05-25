@@ -25,13 +25,16 @@ public class RenameWindow extends TextField {
 
     public void update(MyWindow window) {
         setVisible(true);
-        setText(window.getName());
         this.window = window;
         setPosition(window.getX(), window.getY() + window.getHeight() + 25);
     }
 
     public void clicked() {
         setVisible(false);
-        window.changeName(getText());
+        if (window.isMain)  window.changeName(getText());
+        else if (window.getName().startsWith("if")) { // todo: сделать нормальнее проверку на if
+            window.changeName("if " + getText());
+        }
     }
+
 }

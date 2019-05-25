@@ -4,3 +4,4 @@
 .bam*
 kursachcpp/main
 *.kotlin_module
+*.lua

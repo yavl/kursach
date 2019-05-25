@@ -1,12 +1,15 @@
 package com.kursach.menu;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -24,6 +27,7 @@ public class MenuManager {
     private Menubar menubar;
     public static BlockStore blockStore;
     public static RenameWindow renameWindow;
+    public static Label outputLabel;
 
     public MenuManager(StageInput stageInput, Skin skin) {
         this.stageInput = stageInput;
@@ -45,18 +49,25 @@ public class MenuManager {
         fpsLabel.setX(windowWidth - fpsLabel.getWidth());
         fpsLabel.setY(windowHeight - fpsLabel.getHeight());
 
-        menubar = new Menubar(skin, stageInput);
+        menubar = new Menubar(skin, stageInput, this);
         menubar.setPosition(0, windowHeight - menubar.getHeight());
         stage.addActor(menubar);
         stage.addActor(fpsLabel);
 
         blockStore = new BlockStore(skin);
         blockStore.setPosition((windowWidth - blockStore.getWidth()) / 2, (windowHeight - blockStore.getHeight()) / 2);
+        blockStore.setVisible(false);
         stage.addActor(blockStore);
 
         renameWindow = new RenameWindow(skin);
-        stage.addActor(renameWindow);
         renameWindow.setVisible(false);
+        stage.addActor(renameWindow);
+
+        outputLabel = new Label("", skin);
+        outputLabel.setPosition(Gdx.graphics.getWidth()/2, outputLabel.getHeight());
+        outputLabel.setWidth(Gdx.graphics.getWidth()/2);
+        outputLabel.getStyle().fontColor = Color.TEAL;
+        stage.addActor(outputLabel);
     }
 
     public void createButton(String text, final int command) {
