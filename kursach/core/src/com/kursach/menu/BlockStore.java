@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.kursach.window.Block;
+import com.kursach.window.MyWindow;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ public class BlockStore extends Window {
         debugAll();
         setResizable(true);
         setResizeBorder(8);
+        MyWindow.blockStore = this;
     }
 
     public void addBlock(final Block block) {
