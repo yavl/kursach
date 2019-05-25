@@ -21,6 +21,7 @@ public class RenameWindow extends TextField {
                 return false;
             }
         });
+        MyWindow.renameWindow = this;
     }
 
     public void update(MyWindow window) {

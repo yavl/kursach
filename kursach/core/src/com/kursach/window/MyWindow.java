@@ -17,7 +17,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.kursach.StageInput;
 import com.kursach.menu.BlockStore;
-import com.kursach.menu.MenuManager;
 
 /** A table that can be dragged and act as a modal window. The top padding is used as the window's title height.
  * <p>
@@ -28,8 +27,8 @@ public class MyWindow extends Table {
     static private final Vector2 tmpPosition = new Vector2();
     static private final Vector2 tmpSize = new Vector2();
     static private final int MOVE = 1 << 5;
-    private static BlockStore blockStore = MenuManager.blockStore;
-    private static RenameWindow renameWindow = MenuManager.renameWindow;
+    public static BlockStore blockStore;
+    public static RenameWindow renameWindow;
 
     private com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle style;
     boolean isMovable = true, isModal, isResizable;
@@ -42,7 +41,6 @@ public class MyWindow extends Table {
     boolean isMain = false;
     boolean selected = false;
     public static StageInput stageInput;
-    boolean overChild = false;
 
     protected int edge;
     protected boolean dragging;
