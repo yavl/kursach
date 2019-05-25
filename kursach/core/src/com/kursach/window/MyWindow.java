@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -29,11 +28,8 @@ public class MyWindow extends Table {
     static private final Vector2 tmpPosition = new Vector2();
     static private final Vector2 tmpSize = new Vector2();
     static private final int MOVE = 1 << 5;
-    private float minimumWidth = 150;
-    private float minimumHeight = 150;
     private static BlockStore blockStore = MenuManager.blockStore;
     private static RenameWindow renameWindow = MenuManager.renameWindow;
-    private ShapeRenderer shape;
 
     private com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle style;
     boolean isMovable = true, isModal, isResizable;
@@ -45,17 +41,21 @@ public class MyWindow extends Table {
     boolean drawTitleTable;
     boolean isMain = false;
     boolean selected = false;
+    public static StageInput stageInput;
+    boolean overChild = false;
 
     protected int edge;
     protected boolean dragging;
     private Skin skin;
     private Block parentBlock;
+    MyListener listener;
 
     public MyWindow (String title, Skin skin, Block parentBlock) {
         this(title, skin.get(com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle.class));
         this.skin = skin;
         isMain = true;
         this.parentBlock = parentBlock;
+        listener = new MyListener(this);
 
         setSkin(skin);
         top();
@@ -101,19 +101,13 @@ public class MyWindow extends Table {
         setTransform(true);
         setResizable(true);
         setResizeBorder(8);
-        addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                selected();
-            }
-        });
+        addListener(listener);
     }
 
     public MyWindow (String title, Skin skin) {
         this(title, skin.get(com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle.class));
         this.skin = skin;
-        shape = new ShapeRenderer();
-        shape.setColor(Color.DARK_GRAY);
+        listener = new MyListener(this);
 
         setSkin(skin);
         top();
@@ -150,19 +144,44 @@ public class MyWindow extends Table {
         setTransform(true);
         setMovable(false);
 
-        addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                selected();
-            }
-        });
+        addListener(listener);
+    }
+
+    public void unselect() {
+        stageInput.unselect();
+        selected = false;
+        getTitleLabel().setColor(Color.WHITE);
     }
 
     public void selected() {
-        System.out.println("selected");
-        StageInput.selected = this;
+        stageInput.selectNew(this);
         selected = true;
         getTitleLabel().setColor(Color.GREEN);
+    }
+
+    public void selectClick() {
+        if (!selected) selected();
+        else unselect();
+    }
+
+    public boolean check() {
+        for (int i = 0; i < getChildren().size; i++) {
+            Actor obj = getChildren().get(i);
+            for (EventListener event: obj.getListeners()) {
+                if (event.getClass().getSimpleName().equals(MyListener.class.getSimpleName())) {
+                    if (((MyListener) event).isOver()) {
+                        return true;
+                    }
+                }
+
+                if (event.getClass().getSimpleName().equals("VariableListener")) {
+                    if (((VariableListener) event).isOver()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public void openRenameWindow() {

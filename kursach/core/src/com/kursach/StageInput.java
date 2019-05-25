@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.kursach.window.Block;
+import com.kursach.window.MyWindow;
+import com.kursach.window.VariableField;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +33,8 @@ public class StageInput implements InputProcessor {
     public static Actor selected;
 
     public StageInput(Stage stage, StageManager stageManager) {
+        MyWindow.stageInput = this;
+        VariableField.stageInput = this;
         this.stage = stage;
         this.stageManager = stageManager;
         touchedPos = new Vector3();
@@ -150,5 +154,29 @@ public class StageInput implements InputProcessor {
                 dragOld.set(dragNew);
             }
         }
+    }
+
+    public void selectNew(MyWindow window) {
+        if (selected != null) {
+            if (selected.getClass().getSimpleName().equals("MyWindow"))
+                ((MyWindow) selected).unselect();
+            else if (selected.getClass().getSimpleName().equals("VariableField"))
+                ((VariableField) selected).unselect();
+        }
+        selected = window;
+    }
+
+    public void selectNew(VariableField field) {
+        if (selected != null) {
+            if (selected.getClass().getSimpleName().equals("MyWindow"))
+                ((MyWindow) selected).unselect();
+            else if (selected.getClass().getSimpleName().equals("VariableField"))
+                ((VariableField) selected).unselect();
+        }
+        selected = field;
+    }
+
+    public void unselect() {
+        selected = null;
     }
 }
