@@ -121,7 +121,6 @@ public class StageInput implements InputProcessor {
                 cam.zoom -= 0.15f * cam.zoom;
                 break;
         }
-        System.out.println(cam.zoom);
         return false;
     }
 

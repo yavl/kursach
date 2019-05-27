@@ -2,13 +2,12 @@ package com.kursach.window;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.SnapshotArray;
+import com.kursach.StageInput;
 import com.kursach.lua.LuaConverter;
 import com.kursach.menu.MenuManager;
 
@@ -51,7 +50,17 @@ public class Block extends Group {
                 run();
             }
         });
-        toolbar.add(runButton).size(10, 10).padRight(0).padTop(0);
+        toolbar.add(runButton).expandX().fillX();
+        toolbar.row();
+
+        final Button ifButton = new TextButton("If", skin);
+        ifButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                onIfButtonClick();
+            }
+        });
+        toolbar.add(ifButton).expandX().fillX();
 
         addActor(window);
         addActor(argumentField);
@@ -59,57 +68,6 @@ public class Block extends Group {
         window.addListener(new HoverListener(window));
         window.row();
 
-    }
-
-    public Block(Block copyThis, Skin skin) {
-        MyWindow innerWindow = new MyWindow("if", skin);
-        window = new MyWindow("Title", skin,this);
-        window.setPosition(0, 0);
-        window.add(innerWindow).expandX().fillX();
-
-        window.getChildren();
-
-        argumentField = new TextField("", skin);
-        argumentField.setPosition(window.getX(), window.getY() + window.getHeight());
-        argumentField.addListener(new InputListener() {
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.ENTER) {
-                    getStage().unfocusAll();
-                }
-                return false;
-            }
-        });
-        argumentField.setSize(window.getWidth(), 30);
-
-        toolbar = new Table(skin);
-        toolbar.setPosition(window.getX() + window.getWidth(), window.getY() + window.getHeight() - 150);
-        toolbar.setSize(75, 150);
-        toolbar.setDebug(true);
-
-        final Button runButton = new TextButton("Run", skin);
-        runButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                run();
-            }
-        });
-        toolbar.add(runButton).size(10, 10).padRight(0).padTop(0);
-
-        final Button ifButton = new TextButton("if", skin);
-        runButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                addIf();
-            }
-        });
-        toolbar.add(runButton).size(10, 10).padRight(0).padTop(0);
-
-        addActor(window);
-        addActor(argumentField);
-        addActor(toolbar);
-        window.addListener(new HoverListener(window));
-        window.row();
     }
 
     public void changePosition() {
@@ -141,12 +99,17 @@ public class Block extends Group {
         return window;
     }
 
+    public TextField getArgumentField() {
+        return argumentField;
+    }
+
     public void newBlock() {
         //Block block = new Block();
         //getStage().addActor(block);
     }
 
-    public void addIf() {
-
+    public void onIfButtonClick() {
+        MyWindow ifBlock = new MyWindow("if", window.getSkin());
+        window.addAtIndex(window.getIndex(StageInput.selected), ifBlock);
     }
 }
