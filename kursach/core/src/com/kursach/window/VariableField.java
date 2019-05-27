@@ -65,4 +65,12 @@ public class VariableField extends Table {
         if (!selected) selected();
         else unselect();
     }
+
+    public void moveDown() {
+
+    }
+
+    public void moveUp() {
+
+    }
 }

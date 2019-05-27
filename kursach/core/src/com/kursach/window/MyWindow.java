@@ -575,8 +575,26 @@ public class MyWindow extends Table {
         return condition;
     }
 
-    public String getFunctionName() {
-        String name = getTitleLabel().getText().toString().substring(0, 2);
-        return name;
+    public int getIndex(Actor actor) {
+        SnapshotArray<Actor> temp = new SnapshotArray<>(getChildren());
+        for (int i = 0; i < temp.size; i++) {
+            if (temp.get(i) == actor) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void moveDown() {
+        if (!isMain) {
+            int k = ((MyWindow) getParent()).getIndex(this);
+            if (k < getParent().getChildren().size) {
+
+            }
+        }
+    }
+
+    public void moveUp() {
+
     }
 }

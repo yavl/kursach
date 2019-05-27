@@ -134,10 +134,18 @@ public class StageInput implements InputProcessor {
             cam.translate(camSpeed * cam.zoom * dt, 0, 0);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            cam.translate(0, -camSpeed * cam.zoom * dt, 0);
+            if (selected == null)
+                cam.translate(0, -camSpeed * cam.zoom * dt, 0);
+            else if (selected.getClass().getSimpleName().equals("MyWindow")){
+                ((MyWindow) selected).moveDown();
+            }
+            else if (selected.getClass().getSimpleName().equals("VariableField")){
+                ((VariableField) selected).moveDown();
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            cam.translate(0, camSpeed * cam.zoom * dt, 0);
+            if (selected == null)
+                cam.translate(0, camSpeed * cam.zoom * dt, 0);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();

@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.kursach.StageManager;
 import com.kursach.window.Block;
 import com.kursach.window.MyWindow;
 
@@ -42,6 +43,9 @@ public class BlockStore extends Window {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 block.newBlock();
+                // center camera to block position
+                StageManager.cam.position.x = block.getWindow().getX() + block.getWindow().getWidth() / 2;
+                StageManager.cam.position.y = block.getWindow().getY() + block.getWindow().getHeight() / 2;
             }
         });
         add(blockButton).expandX().fillX();
