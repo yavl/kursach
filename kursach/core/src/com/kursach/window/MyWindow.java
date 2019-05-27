@@ -182,6 +182,20 @@ public class MyWindow extends Table {
         return false;
     }
 
+    public int getIndex(Actor actor) {
+        if ((actor.getClass().getSimpleName().equals("MyWindow") && ((MyWindow) actor).isMain)) {
+            return 1;
+        }
+        SnapshotArray<Actor> temp = getChildren();
+        System.out.println(actor.getClass().getSimpleName());
+        for (int i = 0; i < temp.size; i++) {
+            if (temp.get(i) == actor) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public void openRenameWindow() {
         renameWindow.update(this);
     }
@@ -199,10 +213,10 @@ public class MyWindow extends Table {
 
     public void onClick() {
         VariableField field = new VariableField(skin);
-        addAtIndex(1, field);
+        addFieldAtIndex(1, field);
     }
 
-    public void addAtIndex(int index, Actor actor) {
+    public void addFieldAtIndex(int index, Actor actor) {
         SnapshotArray<Actor> temp = new SnapshotArray<Actor>(getChildren());
         for (int i = index + variableIndex; i < getChildren().size; i++) {
             removeActor(getChildren().get(i));
@@ -217,6 +231,23 @@ public class MyWindow extends Table {
         }
         variableIndex++;
     }
+
+    public void addAtIndex(int index, Actor actor) {
+        SnapshotArray<Actor> temp = new SnapshotArray<Actor>(getChildren());
+        System.out.println(index);
+        for (int i = index; i < getChildren().size; i++) {
+            removeActor(getChildren().get(i));
+            i--;
+        }
+        add(actor).expandX().fillX();
+        row();
+        for (int i = index; i < temp.size; i++) {
+            add(temp.get(i)).expandX().fillX();
+            row();
+        }
+    }
+
+
 
     public MyWindow (String title, com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle style) {
         if (title == null) throw new IllegalArgumentException("title cannot be null.");
