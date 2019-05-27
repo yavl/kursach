@@ -109,7 +109,20 @@ public class Block extends Group {
     }
 
     public void onIfButtonClick() {
+        if (StageInput.selected == null) return;
         MyWindow ifBlock = new MyWindow("if", window.getSkin());
-        window.addAtIndex(window.getIndex(StageInput.selected), ifBlock);
+        if ((StageInput.selected.getClass().getSimpleName().equals("MyWindow"))) {
+            if (((MyWindow) StageInput.selected).isMain) {
+                window.addAtIndex(1, ifBlock);
+                return;
+            }
+            else if (((MyWindow) StageInput.selected).getChildren().size == 1) {
+                ((MyWindow) StageInput.selected).add(ifBlock).expandX().fillX();
+                ((MyWindow) StageInput.selected).row();
+                return;
+            }
+        }
+        MyWindow parent = ((MyWindow) StageInput.selected.getParent());
+        parent.addAtIndex(parent.getIndex(StageInput.selected), ifBlock);
     }
 }

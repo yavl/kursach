@@ -190,7 +190,7 @@ public class MyWindow extends Table {
         System.out.println(actor.getClass().getSimpleName());
         for (int i = 0; i < temp.size; i++) {
             if (temp.get(i) == actor) {
-                return i;
+                return i + 1;
             }
         }
         return -1;
