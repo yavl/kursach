@@ -3,7 +3,6 @@ package com.kursach.lua;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.SnapshotArray;
 import com.kursach.menu.MenuManager;
 import com.kursach.window.Block;
 import com.kursach.window.MyWindow;
@@ -27,9 +26,7 @@ public class LuaConverter {
         try {
             writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(filename), "utf-8"));
-            String arguments = block.getArgumentField().getText();
-            String functionString = String.format("function %s(%s)\n\t", block.getWindow().getName(), arguments);
-            writer.write(functionString); // each block is a function
+            writer.write("function " + block.getWindow().getName() + "()\n\t"); // each block is a function
             for (Actor actor : block.getWindow().getChildren()) {
                 String className = actor.getClass().getSimpleName();
 
@@ -67,10 +64,11 @@ public class LuaConverter {
         try (Writer tempWriter = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(tempFileName), "utf-8"))) {
             for (Block block : MenuManager.blockStore.getBlocks()) {
-                String blockFilename = block.getWindow().getName();
+                System.out.println(block.getWindow().getName());
+                String blockFilename = block.getWindow().getName() + ".lua"; // файл почему-то со звездочкой, напр: factorial*.lua вместо factorial.lua
                 if (filename.equals(blockFilename))
                     continue;
-                tempWriter.write("require \"" + block.getWindow().getName() + "\"\n");
+                tempWriter.write("require \"" + block.getWindow().getName() + "\"");
             }
             String filenameContent = readFile(filename, StandardCharsets.UTF_8);
             tempWriter.write("\n" + filenameContent);
