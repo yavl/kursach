@@ -126,25 +126,21 @@ public class StageInput implements InputProcessor {
 
     public void handleInput(float dt) {
         OrthographicCamera cam = stageManager.cam;
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            cam.translate(-camSpeed * cam.zoom * dt, 0, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            cam.translate(camSpeed * cam.zoom * dt, 0, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            if (selected == null)
-                cam.translate(0, -camSpeed * cam.zoom * dt, 0);
-            else if (selected.getClass().getSimpleName().equals("MyWindow")){
-                ((MyWindow) selected).moveDown();
+        if (selected != null) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                if (selected.getClass().getSimpleName().equals("MyWindow")) {
+                    ((MyWindow) selected).moveDown();
+                } else if (selected.getClass().getSimpleName().equals("VariableField")) {
+                    ((VariableField) selected).moveDown();
+                }
             }
-            else if (selected.getClass().getSimpleName().equals("VariableField")){
-                ((VariableField) selected).moveDown();
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                if (selected.getClass().getSimpleName().equals("MyWindow")) {
+                    ((MyWindow) selected).moveUp();
+                } else if (selected.getClass().getSimpleName().equals("VariableField")) {
+                    ((VariableField) selected).moveUp();
+                }
             }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            if (selected == null)
-                cam.translate(0, camSpeed * cam.zoom * dt, 0);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();

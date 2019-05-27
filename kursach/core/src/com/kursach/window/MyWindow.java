@@ -187,8 +187,7 @@ public class MyWindow extends Table {
             return 1;
         }
         SnapshotArray<Actor> temp = getChildren();
-        System.out.println(actor.getClass().getSimpleName());
-        for (int i = 0; i < temp.size; i++) {
+        for (int i = 1; i < temp.size; i++) {
             if (temp.get(i) == actor) {
                 return i + 1;
             }
@@ -234,7 +233,6 @@ public class MyWindow extends Table {
 
     public void addAtIndex(int index, Actor actor) {
         SnapshotArray<Actor> temp = new SnapshotArray<Actor>(getChildren());
-        System.out.println(index);
         for (int i = index; i < getChildren().size; i++) {
             removeActor(getChildren().get(i));
             i--;
@@ -608,13 +606,26 @@ public class MyWindow extends Table {
 
     public void moveDown() {
         if (!isMain) {
-            int k = ((MyWindow) getParent()).getIndex(this);
-            if (k < getParent().getChildren().size) {
-
+            MyWindow parent = ((MyWindow) getParent());
+            int k = parent.getIndex(this) - 1;
+            System.out.println(k);
+            if (k == parent.getChildren().size) return;
+            else {
+                parent.removeActor(StageInput.selected);
+                parent.addAtIndex(k+1, StageInput.selected);
             }
         }
     }
 
     public void moveUp() {
+        if (!isMain) {
+            MyWindow parent = ((MyWindow) getParent());
+            int k = parent.getIndex(this) - 1;
+            if (k == 1) return;
+            else {
+                parent.removeActor(StageInput.selected);
+                parent.addAtIndex(k-1, StageInput.selected);
+            }
+        }
     }
 }

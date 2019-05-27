@@ -67,10 +67,23 @@ public class VariableField extends Table {
     }
 
     public void moveDown() {
-
+        System.out.println(1);
+        MyWindow parent = ((MyWindow) getParent());
+        int k = parent.getIndex(this) - 1;
+        if (k == parent.getChildren().size) return;
+        else {
+            parent.removeActor(StageInput.selected);
+            parent.addAtIndex(k+1, StageInput.selected);
+        }
     }
 
     public void moveUp() {
-
+        MyWindow parent = ((MyWindow) getParent());
+        int k = parent.getIndex(this) - 1;
+        if (k == 1) return;
+        else {
+            parent.removeActor(StageInput.selected);
+            parent.addAtIndex(k-1, StageInput.selected);
+        }
     }
 }
