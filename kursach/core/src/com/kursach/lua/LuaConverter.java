@@ -65,10 +65,10 @@ public class LuaConverter {
         try (Writer tempWriter = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(tempFileName), "utf-8"))) {
             for (Block block : MenuManager.blockStore.getBlocks()) {
-                String blockFilename = block.getWindow().getName() + ".lua"; // файл почему-то со звездочкой, напр: factorial*.lua вместо factorial.lua
+                String blockFilename = block.getWindow().getName(); // файл почему-то со звездочкой, напр: factorial*.lua вместо factorial.lua
                 if (filename.equals(blockFilename))
                     continue;
-                tempWriter.write("require \"" + block.getWindow().getName() + "*\"\n");
+                tempWriter.write("require \"" + block.getWindow().getName() + "\"\n");
             }
             String filenameContent = readFile(filename, StandardCharsets.UTF_8);
             tempWriter.write("\n" + filenameContent);

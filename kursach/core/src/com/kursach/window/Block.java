@@ -126,7 +126,7 @@ public class Block extends Group {
         String filename = window.getName() + ".lua";
         for (Block block : MenuManager.blockStore.getBlocks()) {
             // export other blocks as Lua first
-            String blockFilename = block.getWindow().getName() + "*.lua";
+            String blockFilename = block.getWindow().getName() + ".lua";
             if (filename.equals(blockFilename))
                 continue;
             LuaConverter blockLua = new LuaConverter(block);
