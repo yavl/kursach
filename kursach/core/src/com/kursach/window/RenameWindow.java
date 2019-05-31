@@ -33,8 +33,11 @@ public class RenameWindow extends TextField {
     public void clicked() {
         setVisible(false);
         if (window.isMain)  window.changeName(getText());
-        else if (window.getName().startsWith("if")) { // todo: сделать нормальнее проверку на if
-            window.changeName("if " + getText());
+        else if (window.getName().startsWith("Если")) { // todo: сделать нормальнее проверку на if
+            window.changeName("Если " + getText());
+        }
+        else if (window.getName().startsWith("Пока")) { // todo: сделать нормальнее проверку на if
+            window.changeName("Пока " + getText());
         }
     }
 

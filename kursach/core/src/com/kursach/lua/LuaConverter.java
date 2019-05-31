@@ -38,8 +38,13 @@ public class LuaConverter {
                     case "MyWindow": {
                         MyWindow temp = (MyWindow) actor;
                         System.out.println(temp.getTitleLabel().getText().substring(0, 2));
-                        if (temp.getTitleLabel().getText().substring(0, 2).equals("if")) {
+                        if (temp.getTitleLabel().getText().substring(0, 4).equals("Если")) {
                             writeToFile("if " + temp.getCondition() + " then\n\t");
+                            processCondition(temp.getChildren());
+                            writeToFile("end\n");
+                        }
+                        else if (temp.getTitleLabel().getText().substring(0, 4).equals("Пока")) {
+                            writeToFile("while " + temp.getCondition() + " then\n\t");
                             processCondition(temp.getChildren());
                             writeToFile("end\n");
                         }

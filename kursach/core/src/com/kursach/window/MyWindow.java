@@ -600,7 +600,7 @@ public class MyWindow extends Table {
 
     public String getCondition() {
         String title = getTitleLabel().getText().toString();
-        String condition = title.substring(3);
+        String condition = title.substring(5);
         return condition;
     }
 

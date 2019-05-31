@@ -56,7 +56,6 @@ public class StageManager {
         mousePos = new Vector3();
 
         font = new BitmapFont();
-        createButton("If", 1);
     }
 
     public void createButton(String text, final int command) {
