@@ -20,10 +20,8 @@ public class Block extends Group {
     private Writer writer;
 
     public Block(Skin skin, Vector3 touchedPos) {
-        MyWindow innerWindow = new MyWindow("if", skin);
-        window = new MyWindow("Title", skin,this);
+        window = new MyWindow("Новая функция", skin,this);
         window.setPosition(touchedPos.x, touchedPos.y);
-        window.add(innerWindow).expandX().fillX();
 
         argumentField = new TextField("", skin);
         argumentField.setPosition(touchedPos.x, touchedPos.y + window.getHeight());
@@ -40,10 +38,9 @@ public class Block extends Group {
 
         toolbar = new Table(skin);
         toolbar.setPosition(touchedPos.x + window.getWidth(), touchedPos.y + window.getHeight() - 150);
-        toolbar.setSize(75, 150);
-        toolbar.setDebug(true);
+        toolbar.setSize(55, 150);
 
-        final Button runButton = new TextButton("Run", skin);
+        final Button runButton = new TextButton("Запуск", skin);
         runButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -53,7 +50,7 @@ public class Block extends Group {
         toolbar.add(runButton).expandX().fillX();
         toolbar.row();
 
-        final Button ifButton = new TextButton("If", skin);
+        final Button ifButton = new TextButton("Если", skin);
         ifButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -61,6 +58,16 @@ public class Block extends Group {
             }
         });
         toolbar.add(ifButton).expandX().fillX();
+        toolbar.row();
+
+        final Button whileButton = new TextButton("Пока", skin);
+        whileButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                onWhileButtonClick();
+            }
+        });
+        toolbar.add(whileButton).expandX().fillX();
 
         addActor(window);
         addActor(argumentField);
@@ -110,7 +117,7 @@ public class Block extends Group {
 
     public void onIfButtonClick() {
         if (StageInput.selected == null) return;
-        MyWindow ifBlock = new MyWindow("if", window.getSkin());
+        MyWindow ifBlock = new MyWindow("Если", window.getSkin());
         if ((StageInput.selected.getClass().getSimpleName().equals("MyWindow"))) {
             if (((MyWindow) StageInput.selected).isMain) {
                 window.addAtIndex(1, ifBlock);
@@ -124,5 +131,23 @@ public class Block extends Group {
         }
         MyWindow parent = ((MyWindow) StageInput.selected.getParent());
         parent.addAtIndex(parent.getIndex(StageInput.selected), ifBlock);
+    }
+
+    public void onWhileButtonClick() {
+        if (StageInput.selected == null) return;
+        MyWindow whileBlock = new MyWindow("Пока", window.getSkin());
+        if ((StageInput.selected.getClass().getSimpleName().equals("MyWindow"))) {
+            if (((MyWindow) StageInput.selected).isMain) {
+                window.addAtIndex(1, whileBlock);
+                return;
+            }
+            else if (((MyWindow) StageInput.selected).getChildren().size == 1) {
+                ((MyWindow) StageInput.selected).add(whileBlock).expandX().fillX();
+                ((MyWindow) StageInput.selected).row();
+                return;
+            }
+        }
+        MyWindow parent = ((MyWindow) StageInput.selected.getParent());
+        parent.addAtIndex(parent.getIndex(StageInput.selected), whileBlock);
     }
 }
