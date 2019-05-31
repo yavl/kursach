@@ -44,7 +44,7 @@ public class LuaConverter {
                             writeToFile("end\n");
                         }
                         else if (temp.getTitleLabel().getText().substring(0, 4).equals("Пока")) {
-                            writeToFile("while " + temp.getCondition() + " then\n\t");
+                            writeToFile("while " + temp.getCondition() + " do\n\t");
                             processCondition(temp.getChildren());
                             writeToFile("end\n");
                         }
@@ -120,10 +120,15 @@ public class LuaConverter {
                 } break;
                 case "MyWindow": {
                     MyWindow temp = (MyWindow) child;
-                    if (temp.getTitleLabel().getText().substring(0, 2).equals("if")) {
+                    if (temp.getTitleLabel().getText().substring(0, 4).equals("Если")) {
                         writeToFile("if " + temp.getCondition() + " then\n\t");
                         processCondition(((MyWindow) child).getChildren());
                         writeToFile("\nend");
+                    }
+                    else if (temp.getTitleLabel().getText().substring(0, 4).equals("Пока")) {
+                        writeToFile("while " + temp.getCondition() + " do\n\t");
+                        processCondition(temp.getChildren());
+                        writeToFile("end\n");
                     }
                 } break;
                 default: {
