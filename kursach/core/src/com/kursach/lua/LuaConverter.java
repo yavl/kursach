@@ -2,6 +2,7 @@ package com.kursach.lua;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kursach.menu.MenuManager;
 import com.kursach.window.Block;
@@ -26,7 +27,8 @@ public class LuaConverter {
         try {
             writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(filename), "utf-8"));
-            writer.write("function " + block.getWindow().getName() + "()\n\t"); // each block is a function
+            String function = String.format("function %s(%s)\n\t", block.getWindow().getName(), block.getArgumentField().getText());
+            writer.write(function); // each block is a function
             for (Actor actor : block.getWindow().getChildren()) {
                 String className = actor.getClass().getSimpleName();
 
@@ -95,6 +97,7 @@ public class LuaConverter {
             {
                 Label label = MenuManager.outputLabel;
                 label.setText(label.getText() + s + '\n');
+                label.setAlignment(Align.bottom);
                 label.setY(label.getY() + label.getHeight());
             }
         } catch (IOException e) {
